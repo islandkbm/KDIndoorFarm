@@ -5,7 +5,7 @@ const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 module.exports = class SensorNode {
   constructor(slaveid, mmaster) {
     this.NodeName = "nuknown";
-    this.DefaultTimeoutmsec = 300;
+    this.DefaultTimeoutmsec = 200;
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
     this.SensorCodes = [];
@@ -54,6 +54,10 @@ module.exports = class SensorNode {
     return new Promise((resolve, reject) => {
        this.modbusMaster.writeFC3(this.SlaveID, Regaddress,Reglength, function(err,data){
           resolve(data) ;
+          if(err)
+          {
+            console.log(err);
+          }
       } );
       
   });
@@ -66,7 +70,7 @@ module.exports = class SensorNode {
     try {
 
 
-      await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec );
+      //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec );
 
       const sensorreadcount = 20;
       let regaddress = 40;

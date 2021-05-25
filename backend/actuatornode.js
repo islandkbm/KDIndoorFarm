@@ -4,7 +4,7 @@ module.exports = class ActuatorNode {
   constructor(slaveid, mmaster) {
     this.OnOffoperationregstartaddress = 601;
     this.OnOffstatusregstartaddress = 301;
-    this.DefaultTimeoutmsec = 300;
+    this.DefaultTimeoutmsec = 200;
 
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
@@ -19,6 +19,11 @@ module.exports = class ActuatorNode {
     return new Promise((resolve, reject) => {
       this.modbusMaster.writeFC3(this.SlaveID, Regaddress,Reglength, function(err,data){
           resolve(data) ;
+          if(err)
+          {
+            console.log(err);
+          }
+
       } );
       
   });
@@ -31,6 +36,10 @@ module.exports = class ActuatorNode {
     return new Promise((resolve, reject) => {
       this.modbusMaster.writeFC16(this.SlaveID, Regaddress,RegDatas, function(err,data){
           resolve(data) ;
+          if(err)
+          {
+            console.log(err);
+          }
       } );
       
   });
@@ -95,6 +104,9 @@ module.exports = class ActuatorNode {
 
         return retstring;
       }
+      else{
+        console.error( "ReadStatusString");
+      }
 
       return null;
     } catch (e) {}
@@ -126,7 +138,7 @@ module.exports = class ActuatorNode {
   async ControlOnOffString(stringonoff) {
     try {
       let regaddress = this.OnOffoperationregstartaddress;
-      let regdatas = Array();
+      let regdatas = [];
 
       //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec);
 

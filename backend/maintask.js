@@ -22,7 +22,6 @@ function postapi(req, rsp) {
     for (let mctl of reqmsg.OutputManual) {
       setOutput(mctl.hardwareChannel, mctl.isonoff);
     }
-    
 
     console.log("setManualControl outputOnoffstring:   " + outputOnoffstring);
     rsp.send("OK");
@@ -104,8 +103,7 @@ function isoutputchange(newstate, laststatus) {
 }
 
 async function modbusTask(modbuscomm) {
-  const sensorscan_interval_sec = 60; // 60초에 한번씩 센서를 스켄함.
-  let sec_count = sensorscan_interval_sec;
+  
   let last_actuator_status = "000000000000000000000000";
   let nodeindex = 0;
   const myactuator = new ActuatorNode(1, modbuscomm);
@@ -117,56 +115,53 @@ async function modbusTask(modbuscomm) {
 
   try {
     while (true) {
-      ///
-      //    console.log("modbusTask start: " + sec_count);
+      
       if (istaskStopByerror == true) {
         return "modbusTask";
       }
 
       ///출력상태가 변경되면 출력변경함.
-      if (isoutputchange(outputOnoffstring, last_actuator_status) == true ) {
+      if (isoutputchange(outputOnoffstring, last_actuator_status) == true) {
         console.log("set outputOnoffstring ====:   " + outputOnoffstring);
 
         //상태를 변경시키고 바로 상태를 읽어온다.
         await myactuator.ControlOnOffString(outputOnoffstring);
-        
+
         console.log("myactuator status  write: " + outputOnoffstring + " ,read: " + last_actuator_status);
         await KDCommon.delay(300);
       }
 
       let retst = await myactuator.ReadStatusString();
-          if (retst) {
-            last_actuator_status = retst;
-            console.log("myactuator status : " + last_actuator_status);
-          }
-          await KDCommon.delay(300);
+      if (retst) {
+        last_actuator_status = retst;
+        console.log("myactuator status : " + last_actuator_status);
+      }
+      await KDCommon.delay(500);
 
-
-
-      sec_count++;
       
-     
-       
-          
 
-          if (nodeindex >= sensornodes.length) {
-            console.log("===============================sensro read end: " + mss.length);
-            //센서값을 읽어온후 한꺼번에 배열에 집어넣는다.
-            mSensors = [];
-            mSensors.push(...mss);
-            mss = [];
-            nodeindex = 0;
-          }
-          const snode = sensornodes[nodeindex];
-          if (snode) {
-            let sensorlist = await snode.ReadSensorAll();
-            if (sensorlist) {
-              mss.push(...sensorlist);
-            }
-          }
+      if (nodeindex >= sensornodes.length) {
+        console.log("===============================sensro read end: " + mss.length);
+        //센서값을 읽어온후 한꺼번에 배열에 집어넣는다.
+        mSensors = [];
+        mSensors.push(...mss);
+        mss = [];
+        nodeindex = 0;
 
-          nodeindex++;
-      await KDCommon.delay(300);
+        //test
+        mSensors[0].value=mtask_count;
+
+      }
+      const snode = sensornodes[nodeindex];
+      if (snode) {
+        let sensorlist = await snode.ReadSensorAll();
+        if (sensorlist) {
+          mss.push(...sensorlist);
+        }
+      }
+
+      nodeindex++;
+      await KDCommon.delay(500);
 
       console.log("modbusTask end: " + mtask_count);
       mtask_count++;
@@ -186,6 +181,7 @@ async function controltask() {
   mAutolist.push(new AutoControl(0, 86000, 1));
   mAutolist.push(new AutoControl(0, 86000, 4));
 
+  /*
   let m3s = new AutoControl(0, 86000, 0);
   m3s.pwmontime = 3;
   m3s.pwmofftime = 3;
@@ -195,7 +191,7 @@ async function controltask() {
   m4s.pwmontime = 2;
   m4s.pwmofftime = 4;
   mAutolist.push(m4s);
-
+*/
   try {
     while (true) {
       await KDCommon.delay(1000);
@@ -205,7 +201,7 @@ async function controltask() {
       const totalsec = clocknow.getHours() * 3600 + clocknow.getMinutes() * 60 + clocknow.getSeconds();
       for (const ma of mAutolist) {
         if (ma.controlcheckbytime(totalsec) === true) {
-          //outputstatetrigger = true;
+          
         }
         setOutput(ma.hwchannel, ma.myonoffstate);
         //  console.log("controltask name: " + ma.myonoffstate);
