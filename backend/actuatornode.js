@@ -4,19 +4,47 @@ module.exports = class ActuatorNode {
   constructor(slaveid, mmaster) {
     this.OnOffoperationregstartaddress = 601;
     this.OnOffstatusregstartaddress = 301;
-    this.DefaultTimeoutmsec = 1000;
+    this.DefaultTimeoutmsec = 300;
 
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
+
+    
+
   }
 
+  
+   readRS485Registers(Regaddress, Reglength)
+  {
+    return new Promise((resolve, reject) => {
+      this.modbusMaster.writeFC3(this.SlaveID, Regaddress,Reglength, function(err,data){
+          resolve(data) ;
+      } );
+      
+  });
+  }
+
+
+  
+  writeRS485Registers(Regaddress, RegDatas)
+  {
+    return new Promise((resolve, reject) => {
+      this.modbusMaster.writeFC16(this.SlaveID, Regaddress,RegDatas, function(err,data){
+          resolve(data) ;
+      } );
+      
+  });
+  }
+  
+
+
   async CheckmySlaveID(timeoutmsec) {
-    if (this.modbusMaster.getTimeout() != timeoutmsec) {
+    //if (this.modbusMaster.getTimeout() != timeoutmsec) {
       await this.modbusMaster.setTimeout(timeoutmsec);
-    }
+    //}
     if (this.modbusMaster.getID() != this.SlaveID) {
-      await this.modbusMaster.setID(this.SlaveID);
-      await  KDCommon.delay(300);
+    //  await this.modbusMaster.setID(this.SlaveID);
+    //  await  KDCommon.delay(300);
     }
   }
 
@@ -45,11 +73,12 @@ module.exports = class ActuatorNode {
 
   async ReadStatusString() {
     try {
-      await this.CheckmySlaveID(this.DefaultTimeoutmsec);
-
+     // await this.CheckmySlaveID(this.DefaultTimeoutmsec);
+     //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec);
+     
       let regaddress = this.OnOffstatusregstartaddress;
 
-      let rv1 = await this.modbusMaster.readHoldingRegisters(regaddress, 24 * 4);
+      let rv1 = await this.readRS485Registers(regaddress, 24 * 4) ; //await this.modbusMaster.readHoldingRegisters(regaddress, 24 * 4);
       if (rv1 != undefined) {
         let retstring = "";
 
@@ -99,7 +128,9 @@ module.exports = class ActuatorNode {
       let regaddress = this.OnOffoperationregstartaddress;
       let regdatas = Array();
 
-      await this.CheckmySlaveID(this.DefaultTimeoutmsec);
+      //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec);
+
+    //  await this.CheckmySlaveID(this.DefaultTimeoutmsec);
 
       let chlength = stringonoff.length;
 
@@ -118,7 +149,8 @@ module.exports = class ActuatorNode {
         regdatas[chi * 4 + 2] = 0;
         regdatas[chi * 4 + 3] = 0;
       }
-      let rv1 = await this.modbusMaster.writeRegisters(regaddress, regdatas);
+      let rv1 = await this.writeRS485Registers(regaddress, regdatas); //await this.modbusMaster.writeRegisters(regaddress, regdatas);
+      
 
       if (rv1 != undefined) {
         return true;

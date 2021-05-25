@@ -5,7 +5,7 @@ const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 module.exports = class SensorNode {
   constructor(slaveid, mmaster) {
     this.NodeName = "nuknown";
-    this.DefaultTimeoutmsec = 1000;
+    this.DefaultTimeoutmsec = 300;
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
     this.SensorCodes = [];
@@ -49,14 +49,29 @@ module.exports = class SensorNode {
     }
   }
 
+   readRS485Registers(Regaddress, Reglength)
+  {
+    return new Promise((resolve, reject) => {
+       this.modbusMaster.writeFC3(this.SlaveID, Regaddress,Reglength, function(err,data){
+          resolve(data) ;
+      } );
+      
+  });
+   
+
+  }
+
+
   async ReadSensorAll() {
     try {
-      await this.CheckmySlaveID(this.DefaultTimeoutmsec);
+
+
+      await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec );
+
       const sensorreadcount = 20;
       let regaddress = 40;
-      let rv1 = await this.modbusMaster.readHoldingRegisters(regaddress, sensorreadcount * 3);
+      const  rv1 = await this.readRS485Registers(regaddress, sensorreadcount * 3); //this.modbusMaster.readHoldingRegisters(regaddress, sensorreadcount * 3);
       let svlist = [];
-
       if (rv1 != undefined) {
         for (let i = 0; i < sensorreadcount; i++) {
           let sv_float = Buffer.from([(rv1.data[i * 3 + 0] >> 0) & 0xff, (rv1.data[i * 3 + 0] >> 8) & 0xff, (rv1.data[i * 3 + 1] >> 0) & 0xff, (rv1.data[i * 3 + 1] >> 8) & 0xff]).readFloatLE(0);
@@ -70,7 +85,7 @@ module.exports = class SensorNode {
 
         return svlist;
       } else {
-        console.log("ReadSensor fail : " + regaddress);
+        console.log("ReadSensor fail : " + this.SlaveID);
       }
 
       return null;

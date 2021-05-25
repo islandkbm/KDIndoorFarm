@@ -9,8 +9,8 @@ module.exports = class AutoControl {
       this.myonoffstate=false;
       this.pwmcontrolenable=true;
       this.pwmonoffstatus=false;
-      this.pwmontime=10;
-      this.pwmofftime=20;
+      this.pwmontime=5;
+      this.pwmofftime=10;
       this.pwmontime_count=0;
       this.pwmofftime_count=0;
       
