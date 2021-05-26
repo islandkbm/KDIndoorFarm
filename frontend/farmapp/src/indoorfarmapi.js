@@ -3,7 +3,8 @@ import reqMessage from "./reqMessage";
 
 
 import Sensordevice from "./commonjs/sensordevice";
-
+import Outputdevice from "./commonjs/outputdevice";
+import responseMessage from "./commonjs/responseMessage";
 
 
 const API = "/api/";
@@ -41,11 +42,11 @@ export default class IndoorFarmAPI {
       reqmsg.getSensors = true;
 
       
-      const res = await IndoorFarmAPI.postData(API + "getsensorstatus", reqmsg);
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
       const resdata = await res.json();
       
 
-      resdata.forEach((element) => {
+      resdata.Sensors.forEach((element) => {
         mlist.push(Sensordevice.Clonbyjsonobj(element));
       });
     } catch (error) {
@@ -55,6 +56,30 @@ export default class IndoorFarmAPI {
       return mlist;
     }
   }
+
+
+  
+  static async getoutputstatus() {
+    var mlist = [];
+
+    try {
+      const reqmsg = new reqMessage();
+      reqmsg.getOutputport = true;
+
+      
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await res.json();
+      resdata.Outputs.forEach((element) => {
+        mlist.push(Outputdevice.Clonbyjsonobj(element));
+      });
+    } catch (error) {
+      console.log(" getoutputstatus error : " + error);
+    } finally {
+      console.log(" getoutputstatus finally  : " + mlist.length);
+      return mlist;
+    }
+  }
+
 
   static async setmanualonoff(moutputport) {
    
@@ -66,15 +91,14 @@ export default class IndoorFarmAPI {
       reqmsg.OutputManual.push(moutputport);
 
       
-      const res = await IndoorFarmAPI.postData(API + "getsensorstatus", reqmsg);
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
       const resdata = await res.json();
-      resdata.forEach((element) => {
-        mlist.push(Sensordevice.Clonbyjsonobj(element));
-      });
+      console.log(" setmanualonoff rsp : " + resdata.IsOK);
+
     } catch (error) {
-      console.log(" getsensordata error : " + error);
+      console.log(" setmanualonoff error : " + error);
     } finally {
-      console.log(" getsensordata finally  : " + mlist.length);
+      console.log(" setmanualonoff finally  : " + mlist.length);
       return mlist;
     }
 

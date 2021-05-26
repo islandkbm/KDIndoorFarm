@@ -65,6 +65,12 @@ module.exports = class SensorNode {
 
   }
 
+  async ReadDummy() {
+
+    const  rv1 = await this.readRS485Registers(10, 1); //this.modbusMaster.readHoldingRegisters(regaddress, sensorreadcount * 3);
+    return rv1;
+
+  }
 
   async ReadSensorAll() {
     try {

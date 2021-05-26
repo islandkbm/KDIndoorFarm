@@ -1,33 +1,80 @@
+const fs = require('fs');
+const Outputdevice = require("../frontend/farmapp/src/commonjs/outputdevice.js");
 
 module.exports = class AutoControl {
-    constructor(starttime,endtime,hchannel) {
-      this.Name = "nuknown";
-      this.hwchannel = hchannel;
-      this.starttime_sec = starttime;
-      this.endtime_sec = endtime;
-      this.enabled=false;
-      this.myonoffstate=false;
-      this.pwmcontrolenable=true;
+
+    static Writefile(filename, mautolist)
+    {
+        let data = JSON.stringify(mautolist);
+        fs.writeFileSync(filename, data);
+
+    }
+    static  Readfile(filename)
+    {
+
+        let rawdata = fs.readFileSync(filename);
+        let objlist = JSON.parse(rawdata);
+
+        let alist=[];
+        objlist.forEach(element => {
+            alist.push(Object.assign(new AutoControl(), element));
+        });
+
+        return alist;
+
+    }
+
+
+
+
+    constructor() {
+      
+    this.pwmcontrolenable=true;
       this.pwmonoffstatus=false;
       this.pwmontime=5;
       this.pwmofftime=10;
       this.pwmontime_count=0;
       this.pwmofftime_count=0;
+
+
+
+      //자동제어 고유id 자동생성
+      this.uniqid= "AID"+ Math.random().toString(36).substr(2, 16);
+      
+      this.myonoffstate=false;
+      
+      
+
+
+      this.enabled=false;
+      this.name = "자동제어";
+      this.starttime = 0;// 시작시간
+      this.endtime = 8900;    // 종료시간
+      this.devids=[];
+      this.priority=0;
+      this.istimer=false;
+
+      this.sensorid="";
+      this.onvalue=0;
+      this.offvalue=0;
+
+      this.condition="up";
+      
+      this.onetime_run=60;
+      this.onetime_idle=60;
+
+
+      
+
+
+
       
     }
-    controlcheckbytime(timesecnow)
+    //test
+    controlbypwm()
     {
-        let mstatus=false;
 
-        if(timesecnow>=  this.starttime_sec && timesecnow < this.endtime_sec)
-        {
-            mstatus=true;
-
-        }
-        else{
-            mstatus=false;
-            
-        }
+        let mstatus=true;
 
         if(this.pwmcontrolenable== true )
         {
@@ -57,14 +104,106 @@ module.exports = class AutoControl {
             }
         }
 
-        if(this.myonoffstate !=mstatus)
+        return mstatus;
+
+    }
+    controlbytimer()
+    {
+        return true;
+    }
+    controlbysensor(msensors)
+    {
+        let mstatus=null;
+
+        for(const ms of msensors)
         {
-               this.myonoffstate=mstatus;
-               return true;
-         }
+            if(ms.UniqID === this.sensorid)
+            {
+                if(this.condition  =="up")
+                {
+                    if(ms.value > this.onvalue)
+                    {
+                        mstatus=true;
+                    }
+                    else 
+                    {
+                        if(ms.value <  this.offvalue)
+                        {
+                            mstatus=false;
+                        }
+                    }
+
+
+                }
+                else{
+                    if(ms.value < this.onvalue)
+                    {
+                        mstatus=true;
+                    }
+                    else 
+                    {
+                        if(ms.value >  this.offvalue)
+                        {
+                            mstatus=false;
+                        }
+                    }
+
+                }
+
+                break;
+            }
+        }
+
+
+        return mstatus;
+    }
+    controlcheckbytime(msensors, timesecnow)
+    {
+        let mstatus=false;
+
+        if(timesecnow>=  this.starttime && timesecnow < this.endtime)
+        {
+            if(this.istimer ===true)
+            {
+                mstatus=this.controlbytimer();
+            }
+            else if(this.pwmcontrolenable=== true)
+            {
+                mstatus=this.controlbypwm();
+
+            }
+            else{
+
+                mstatus=this.controlbysensor(msensors);
+
+            }
+
+            
+
+        }
+        else{
+            mstatus=false;
+            
+        }
+
+       if(mstatus !=null)
+       {
+
+            if(this.myonoffstate !=mstatus)
+            {
+                this.myonoffstate=mstatus;
+                
+
+                return true;
+            }
+        }
+
+
         return false;
 
     }
+
+    
     
   };
   

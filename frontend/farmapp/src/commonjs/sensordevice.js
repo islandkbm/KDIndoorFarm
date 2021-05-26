@@ -2,7 +2,7 @@
 
 
 
-var KDSensorTypeEnum = Object.freeze(
+const KDSensorTypeEnum = Object.freeze(
     {
 
         SUT_None: 0,
@@ -64,10 +64,10 @@ var KDSensorTypeEnum = Object.freeze(
  class Sensordevice{
         static Clonbyjsonobj(mobj)
         {
-            return new Sensordevice(mobj.nodeID,mobj.SensorCode, mobj.value, mobj.status);
+            return new Sensordevice(mobj.nodeID,mobj.SensorCode, mobj.value, mobj.status,mobj.errorcount);
         }
     
-        constructor(nodeid, sensorcode,sensorvalue,sensorstatus) {
+        constructor(nodeid, sensorcode,sensorvalue,sensorstatus, errorcount=0) {
     
     
             let hwchannel = (sensorcode >> 8) & 0xff;
@@ -82,6 +82,8 @@ var KDSensorTypeEnum = Object.freeze(
             this.status =sensorstatus;// repdatas[2];
             this.Sensortype = sensortype;
             this.SensorCode = sensorcode;
+            this.UniqID = "S"+nodeid+"C"+sensorcode; // 센서를 구별하는 고유ID  센서노드와 채널 타입정보로 생성한다. S11C123
+            this.errorcount=errorcount;
 
             switch (this.Sensortype) {
                 case KDSensorTypeEnum.SUT_Temperature: this.ValueUnit = "℃"; this.Name = "온도"; this.SignificantDigit = 1; break;

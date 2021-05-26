@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
     res.send('indoor farm express start..');
   });
   
-app.use("/api/getsensorstatus", function (req, res) {
+app.use("/api/farmrequest", function (req, res) {
     MainAPI.postapi(req,res);
   });
   
