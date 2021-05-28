@@ -53,13 +53,52 @@ const Autocontrolpage = () => {
       if( e.target.name ==="onvalue"){   copycfg.onvalue = Number(e.target.value); }
       if( e.target.name ==="offvalue"){   copycfg.offvalue =Number( e.target.value); }
       
+      if( e.target.name ==="devcheck"){   
+       
+        
+        let isexist=false;
+          for(let i=0;i< copycfg.devids.length;i++)
+          {
+            if(copycfg.devids[i] === Number(e.target.id))
+            {
+              if( e.target.checked ===false)
+              {
+                console.log("splice  11: " + copycfg.devids.length );
+              copycfg.devids.splice(i,1);
+              console.log("splice  22: " + copycfg.devids.length );
+              return ;
+              }
+              else{
+                isexist=true;
+                break;
+
+              }
+
+            }
+
+          }
+          //새로추가
+          if(isexist ===false)
+          {
+            console.log("add  11: " + copycfg.devids.length );
+            copycfg.devids.push(Number(e.target.id));
+            console.log("add  22: " + copycfg.devids.length);
+            console.log(copycfg.devids);
+
+          }
+        
+       }
+
+      
+
+
     }
 
     function sensorselectbox(mitem)
     {
       return (
         <ui>
-        <input type="radio" key={mitem.uniqkey+mydata.mConfig.uniqid} name="sensorsel" defaultChecked={mitem.seleted}/>
+        <input type="radio" key={mydata.mConfig.uniqid} name="sensorsel" defaultChecked={mitem.seleted} id={mitem.uniqkey}/>
           {mitem.title}
           </ui>
       );
@@ -70,7 +109,7 @@ const Autocontrolpage = () => {
     {
       return (
         <ui>
-        <input type="checkbox" key={mitem.uniqkey+mydata.mConfig.uniqid} name="devcheck" defaultChecked={mitem.seleted}/>
+        <input type="checkbox" key={mydata.mConfig.uniqid} name="devcheck" defaultChecked={mitem.seleted} id={mitem.uniqkey} />
           {mitem.title}
           </ui>
       );
