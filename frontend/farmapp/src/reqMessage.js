@@ -12,6 +12,7 @@ export default class reqMessage{
     setAutocontrol=false
 
     OutputManual=[];
+    Autoconfigitem=null;
 
 
 

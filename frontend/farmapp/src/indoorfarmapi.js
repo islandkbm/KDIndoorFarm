@@ -4,6 +4,7 @@ import reqMessage from "./reqMessage";
 
 import Sensordevice from "./commonjs/sensordevice";
 import Outputdevice from "./commonjs/outputdevice";
+import AutoControl from "./commonjs/autocontrol";
 import responseMessage from "./commonjs/responseMessage";
 
 
@@ -58,6 +59,46 @@ export default class IndoorFarmAPI {
   }
 
 
+  static async getautocontrols() {
+    
+    let mrepmsg = new responseMessage();
+
+
+    try {
+      const reqmsg = new reqMessage();
+      //자동제어  센서목록, 출력목록 다 가져옴
+      reqmsg.getAutoControl = true;
+      reqmsg.getSensors = true;
+      reqmsg.getOutputport = true;
+
+      
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await res.json();
+      
+
+      resdata.AutoControls.forEach((element) => {
+        mrepmsg.AutoControls.push(AutoControl.Clonbyjsonobj(element));
+      });
+
+      resdata.Sensors.forEach((element) => {
+        mrepmsg.Sensors.push(Sensordevice.Clonbyjsonobj(element));
+      });
+
+
+      resdata.Outputs.forEach((element) => {
+        mrepmsg.Outputs.push(Outputdevice.Clonbyjsonobj(element));
+      });
+
+
+
+
+    } catch (error) {
+      console.log(" getautocontrols error : " + error);
+    } finally {
+      console.log(" getautocontrols finally  : " + mrepmsg.AutoControls.length);
+      return mrepmsg;
+    }
+  }
   
   static async getoutputstatus() {
     var mlist = [];
@@ -103,4 +144,32 @@ export default class IndoorFarmAPI {
     }
 
   }
+  
+  
+  static async setAutocontrolsetup(mAutocfg) {
+   
+    var isok =false;
+
+    try {
+      const reqmsg = new reqMessage();
+      reqmsg.setAutocontrol = true;
+      reqmsg.Autoconfigitem = mAutocfg;
+      
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await res.json();
+      console.log(" setAutocontrolsetup rsp : " + resdata.IsOK);
+      isok=true;
+
+    } catch (error) {
+      console.log(" setAutocontrolsetup error : " + error);
+    } finally {
+      console.log(" setAutocontrolsetup finally  : " + isok);
+      return isok;
+    }
+
+  }
+  
+
+
+
 }

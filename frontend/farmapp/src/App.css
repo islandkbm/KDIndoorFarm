@@ -45,7 +45,7 @@
     
     background: goldenrod;
     color: rebeccapurple;
-    margin: 10px+10px+10px+10px;
+    margin: 2px+2px+2px+2px;
  
     vertical-align: middle;
 }
@@ -75,4 +75,42 @@
     margin: 10px+10px+10px+10px;
  
     vertical-align: middle;
+}
+.mainbox
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap:nowrap;
+}
+.leftbox
+{
+  width: 200px;
+  background:cadetblue ;
+}
+.rightbox
+{
+  background:darkcyan ;
+}
+.controltop
+{
+  background:lightblue ;
+}
+
+.autocontroltable
+{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.autocontrolbox
+{
+    width: 100%;
+    background: lightseagreen;
+    margin: 2px+2px+2px+2px;
+}
+.autosetupbox
+{
+  background: lightpink;
 }
