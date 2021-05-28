@@ -66,14 +66,7 @@ function App() {
         </div>
       </Router>
 
-      channel :
-      <input type="number" onChange={handleChange} min="0" max="23" />
       
-
-      <header className="App-header">
-
-                
-      </header>
     </div>
   );
 }

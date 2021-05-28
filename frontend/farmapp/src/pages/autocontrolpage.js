@@ -52,25 +52,26 @@ const Autocontrolpage = () => {
       if( e.target.name ==="name"){   copycfg.name = e.target.value; }
       if( e.target.name ==="onvalue"){   copycfg.onvalue = Number(e.target.value); }
       if( e.target.name ==="offvalue"){   copycfg.offvalue =Number( e.target.value); }
+      
     }
 
-    function sensorselectbox(mtitle, isseleted)
+    function sensorselectbox(mitem)
     {
       return (
         <ui>
-        <input type="radio" key={mtitle} name="sensorsel" defaultChecked={isseleted}/>
-          {mtitle}
+        <input type="radio" key={mitem.uniqkey+mydata.mConfig.uniqid} name="sensorsel" defaultChecked={mitem.seleted}/>
+          {mitem.title}
           </ui>
       );
     }
 
     
-    function devicecheckbox(mtitle, isseleted)
+    function devicecheckbox(mitem)
     {
       return (
         <ui>
-        <input type="checkbox" key={mtitle} name="devcheck" defaultChecked={isseleted}/>
-          {mtitle}
+        <input type="checkbox" key={mitem.uniqkey+mydata.mConfig.uniqid} name="devcheck" defaultChecked={mitem.seleted}/>
+          {mitem.title}
           </ui>
       );
     }
@@ -86,7 +87,8 @@ const Autocontrolpage = () => {
           seleted=true;
         }
         const title=ss.Name  + "(노드:"+ss.nodeID +" , 채널 :"+ ss.channel+")";
-        slist.push({"title":title,"seleted":seleted });
+        const uniqkey=ss.UniqID;
+        slist.push({"title":title,"seleted":seleted , "uniqkey":uniqkey});
 
       }
       
@@ -105,7 +107,9 @@ const Autocontrolpage = () => {
           }
         }
         const title=dev.Name + "( 채널 :"+ dev.Channel+")";
-        dlist.push({"title":title,"seleted":seleted });
+        const uniqkey=dev.UniqID;
+
+        dlist.push({"title":title,"seleted":seleted, "uniqkey":uniqkey });
 
       }
       
@@ -120,13 +124,13 @@ const Autocontrolpage = () => {
           <ul>asdf {mydata.mConfig.devids[0]}</ul>
 
           <div className="outportselectbox" onChange={inputonchangeHandler}>
-          {dlist.map((localState, index) =>  devicecheckbox(localState.title, localState.seleted))}
+          {dlist.map((localState, index) =>  devicecheckbox(localState))}
           </div>
           
 
 
           <div className="sensorselectbox" onChange={inputonchangeHandler}>
-          {slist.map((localState, index) =>  sensorselectbox(localState.title, localState.seleted))}
+          {slist.map((localState, index) =>  sensorselectbox(localState))}
           </div>
           
           
