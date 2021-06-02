@@ -114,3 +114,53 @@
 {
   background: lightpink;
 }
+.outportselectbox
+{
+  background: rgb(228, 199, 205);
+}
+.sensorselectbox
+{
+  background: rgb(185, 143, 152);
+}
+
+.out_value_image
+{
+  width: 60px;
+  vertical-align: middle;
+}
+.out_name_image
+{
+  width: 40px;
+  vertical-align: middle;
+}
+
+
+.linkmenu
+{
+  text-decoration: none;
+}
+
+.namelogo
+{
+  width: 50px;
+  height: 40px;
+  vertical-align: middle;
+}
+
+.sensroicon
+{
+  width: 35px;
+  vertical-align: middle;
+}
+
+.contentimg
+{
+  width: 30px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+
+
+
+

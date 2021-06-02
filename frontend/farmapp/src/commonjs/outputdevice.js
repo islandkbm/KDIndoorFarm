@@ -16,6 +16,7 @@ class Outputdevice {
     ODT_LED: 4,
     ODT_COOLER: 5,
     ODT_HEATER: 6,
+    ODT_RELAY: 7,
     ODT_ETC: 99,
   });
 

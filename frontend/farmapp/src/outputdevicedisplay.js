@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React from "react";
 import IndoorFarmAPI from "./indoorfarmapi";
 import manualMessage from "./manualmessage";
 import Outputdevice from "./commonjs/outputdevice";
@@ -18,55 +18,44 @@ function manualonoff(channel, onoff) {
 }
 
 function outputdevbox(mydata, isonlystatus) {
-  console.log("outputdevbox 01 : " + isonlystatus);
-  let ismanual;
+  let ismanual = "자동제어중";
+  let devicon = "./image/devicon_" + mydata.DevType + ".png";
+  let onofficon = "./image/" + mydata.Status + ".png";
 
   if (mydata.Status === Outputdevice.OPStatus.OPS_Local) {
-    ismanual = <ul>현장제어중 </ul>;
+    ismanual = "현장제어중";
   } else if (mydata.Autocontrolid == 0) {
     if (isonlystatus == true) {
-      ismanual = <ul>수동제어</ul>;
+      ismanual = "수동제어";
     } else {
       ismanual = (
-        <ul>
-          <button onClick={() => manualonoff(mydata.Channel, true)}>수동 On</button> <button onClick={() => manualonoff(mydata.Channel, false)}>수동 Off</button>
-        </ul>
+        <div>
+          <button className="button_on" onClick={() => manualonoff(mydata.Channel, true)}>수동 On</button> <button className="button_off"  onClick={() => manualonoff(mydata.Channel, false)}>수동 Off</button>
+        </div>
       );
     }
-  } else {
-    ismanual = <ul>자동제어중 </ul>;
   }
 
   return (
-    <div className="outputbox">
-      <ul>{mydata.Name}</ul>
-      <ul>{mydata.Status} </ul>
-      {ismanual}
+    <div className="out_con">
+      <div className="out_name">
+        <img src={devicon} className="icon" />   {mydata.Name}
+      </div>
+      <div className="out_value">
+        <img src={onofficon} className="onoff" />
+      </div>
+      <div className="out_result">{ismanual}</div>
     </div>
   );
 }
 
-function Outputdevicedisplay(updateintervalmsec,isonlystatus) {
-  console.log("Outputdevicedisplay 01");
-
-  const [moutdevarray, setUpdate] = useState([]);
-
-  useEffect(() => {
-    let interval = null;
-
-    interval = setInterval(() => {
-      IndoorFarmAPI.getoutputstatus().then((devices) => {
-        setUpdate(devices);
-      });
-    }, updateintervalmsec);
-
-    return () => clearInterval(interval);
-  }, [moutdevarray]);
-
+function Outputdevicedisplay(moutdevarray, isonlystatus) {
   return (
-    <div className="outputtable">
-      <h1>output display</h1>
-      {moutdevarray.map((localState, index) => outputdevbox(localState, isonlystatus))}
+    <div className="output">
+      <div className="out_title">OUTPUT DISPLAY</div>
+      <div className="out">
+        {moutdevarray.map((localState, index) => outputdevbox(localState, isonlystatus))}
+       </div>
     </div>
   );
 }

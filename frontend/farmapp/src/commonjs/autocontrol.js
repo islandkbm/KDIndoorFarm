@@ -5,7 +5,7 @@ const AutoControlconfig = require("./autocontrolconfig");
 module.exports = class AutoControl {
   constructor(mconfig) {
     this.mConfig = mconfig;
-    this.mState = new AutoControlStatus();
+    this.mState = new AutoControlStatus(mconfig.UniqID);
   }
 
   static Clonbyjsonobj(mobj) {

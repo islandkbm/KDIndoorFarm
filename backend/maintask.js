@@ -13,8 +13,8 @@ const Sensordevice = require("../frontend/farmapp/src/commonjs/sensordevice.js")
 const responseMessage = require("../frontend/farmapp/src/commonjs/responseMessage");
 
 
-const outdevicefilename= 'indoorfarmoutputdevicelist.json';
-const autofilename= 'indoorfarmautocontollist.json';
+const outdevicefilename= '../indoorfarmoutputdevicelist.json';
+const autofilename= '../indoorfarmautocontollist.json';
 
 
 
@@ -39,6 +39,10 @@ function saveautoconfig(mcfgitem)
       {
         isnew=false;
 
+        
+        //이전출력장비 설정값을 미리 클리어한후 업데이트함.
+        setoutputchangebyautocontrol(mcfglist[i],false,true);
+
         mcfglist[i] = mcfgitem;
         break;
 
@@ -62,7 +66,7 @@ function postapi(req, rsp) {
 
   let reqmsg = JSON.parse(JSON.stringify(req.body));
 
-  console.log("---------------------------------postapi :  sensor :"  + reqmsg.getSensors+ " ,getOutputport:  " + reqmsg.getOutputport);
+  //console.log("---------------------------------postapi :  sensor :"  + reqmsg.getSensors+ " ,getOutputport:  " + reqmsg.getOutputport);
 
 
   if (reqmsg.setManualControl === true) {
@@ -127,7 +131,7 @@ async function maintask() {
       console.info("connect comport : " + ModbusComm.isOpen);
     }
     if (ModbusComm.isOpen == true) {
-      await ModbusComm.setTimeout(400);
+      await ModbusComm.setTimeout(200);
       const promisearray = [modbusTask(ModbusComm), controltask()];
       await Promise.all(promisearray);
     }
@@ -215,15 +219,14 @@ function sensorupdate(newsensorlist) {
 
 async function modbusTask(modbuscomm) {
   let last_actuator_status = "000000000000000000000000";
-
   const myactuator = new ActuatorNode(1, modbuscomm);
   const mysnode_sid_11 = new SensorNode(11, modbuscomm);
   const mysnode_sid_12 = new SensorNode(12, modbuscomm);
   let mss = [];
   const sensornodes = [mysnode_sid_11, mysnode_sid_12];
-  let mtask_count = 0;
-  let stateindex = 0;
   let isoutput_update = false;
+  let modbusTask_count=0;
+
 
   try {
     while (true) {
@@ -231,65 +234,46 @@ async function modbusTask(modbuscomm) {
         return "modbusTask";
       }
 
+      
       ///출력상태가 변경되면 출력변경함.
       if (isoutputchange(outputOnoffstring, last_actuator_status) == true && isoutput_update == false) {
         console.log("set myactuator status  write: " + outputOnoffstring + " ,last: " + last_actuator_status);
-
-        //상태를 변경시키고 바로 상태를 읽어온다.
+        
         await myactuator.ControlOnOffString(outputOnoffstring);
+        await KDCommon.delay(300);
         isoutput_update = true;
         stateindex = 0;
       }
 
-      switch (stateindex) {
-        case 0:
-          {
-            let retst = await myactuator.ReadStatusString();
-            if (retst) {
-              last_actuator_status = retst;
+      let retst = await myactuator.ReadStatusString();
+      if (retst) {
+        last_actuator_status = retst;
+        isoutput_update = false;
+        outputstatusupdate(mOutDevices, last_actuator_status);
+        await KDCommon.delay(200);
 
-              isoutput_update = false;
-              outputstatusupdate(mOutDevices, last_actuator_status);
-              // await KDCommon.delay(100);
+       // console.log("myactuator status : " + last_actuator_status);
+      }
 
-              console.log("myactuator status : " + last_actuator_status);
-            }
-          }
 
-          break;
-        case 2:
           mss = [];
+          for(const snode of sensornodes)
           {
-            let sensorlist = await mysnode_sid_11.ReadSensorAll();
+            let sensorlist = await snode.ReadSensorAll();
             if (sensorlist) {
               mss.push(...sensorlist);
             }
+            await KDCommon.delay(300);
           }
-          break;
 
-        case 3:
-          {
-            let sensorlist = await mysnode_sid_12.ReadSensorAll();
-            if (sensorlist) {
-              mss.push(...sensorlist);
-            }
+          
+          sensorupdate(mss);
 
-            sensorupdate(mss);
-            //mSensors = [];
-            //mSensors.push(...mss);
-          }
-          break;
-      }
+      await KDCommon.delay(200);
 
-      stateindex++;
-      if (stateindex >= 4) {
-        stateindex = 0;
-      }
-
-      await KDCommon.delay(300);
-
-      //  console.log("modbusTask end: " + mtask_count);
-      mtask_count++;
+      modbusTask_count++;
+       console.log("modbusTask end: " + modbusTask_count);
+     
     }
   } catch (error) {
     console.log("modbusTask : catch...... ");
@@ -348,6 +332,27 @@ function Autocontrolload(isonlyoneitem) {
   }
 
 }
+
+function setoutputchangebyautocontrol(mautocfg,onoffstate,  isclear)
+{
+  for (const mdevid of mautocfg.devids) {
+    for (let mdev of mOutDevices) {
+      if (mdev.UniqID === mdevid) {
+        if(isclear ===true)
+        {
+          setOutput(mdev.Channel, false);
+          mdev.Autocontrolid = "";
+        }
+        else{
+          setOutput(mdev.Channel, onoffstate);
+          mdev.Autocontrolid = mautocfg.uniqid;
+        }
+        
+      }
+    }
+  }
+}
+
 
 async function controltask() {
 
@@ -434,15 +439,7 @@ AutoControlconfig.Writefile(autofilename,mconfiglist);
   mOutDevices = Outputdevice.Readfile(outdevicefilename);
 
   Autocontrolload(null);
-  /*
-  let mcfglist= AutoControlconfig.Readfile(autofilename);
 
-  mAutolist=[];
-  for(const mcfg of mcfglist)
-  {
-    mAutolist.push(new AutoControl(mcfg));
-  }
-  */
   
 
   
@@ -460,14 +457,7 @@ AutoControlconfig.Writefile(autofilename,mconfiglist);
       //  console.log("mAutolist name : " + ma.mConfig.name);
 
         if (ma.ischangebycontrol(mSensors, totalsec) === true) {
-          for (const mdevid of ma.mConfig.devids) {
-            for (let mdev of mOutDevices) {
-              if (mdev.UniqID === mdevid) {
-                setOutput(mdev.Channel, ma.mState.onoffstate);
-                mdev.Autocontrolid = ma.mConfig.uniqid;
-              }
-            }
-          }
+          setoutputchangebyautocontrol(ma.mConfig,ma.mState.onoffstate, false);
         }
       }
 

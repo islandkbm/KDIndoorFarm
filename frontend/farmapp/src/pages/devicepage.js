@@ -1,12 +1,27 @@
-import React from 'react';
+import React, {  useState, useEffect } from "react";
 import Outputdevicedisplay from "../outputdevicedisplay";
+import IndoorFarmAPI from "../indoorfarmapi";
 
 const Devicepage = () => {
+
+    const [moutdevarray, setUpdate] = useState([]);
+  useEffect(() => {
+    let interval = null;
+
+    interval = setInterval(() => {
+      IndoorFarmAPI.getoutputstatus().then((devices) => {
+        setUpdate(devices);
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [moutdevarray]);
+
+
     return(
-        <div>
-            <h2>Device Page</h2>
-            <div className="outputblock">{Outputdevicedisplay(1000,false)}</div>
-        </div>
+
+            <div className="output">{Outputdevicedisplay(moutdevarray,false)}</div>
+
     )
 }
 

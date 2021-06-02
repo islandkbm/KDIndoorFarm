@@ -1,6 +1,7 @@
 //자동제어시 변경되는 상태나 변수를 저장함.
 module.exports = class AutoControlStatus {
-  constructor() {
+  constructor(uniqid) {
+    this.autouniqid=uniqid;
     this.pwmonoffstate = false;
 
     this.pwmontime_count = 0;

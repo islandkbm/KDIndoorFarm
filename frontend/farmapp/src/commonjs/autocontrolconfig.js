@@ -4,7 +4,11 @@ const fs = require('fs');
 module.exports = class AutoControlconfig {
 
     static deepcopy(mobj) {
+
+      console.log("AutoControlconfig deepcopy ");
+
         return Object.assign(new AutoControlconfig(), mobj);
+
       }
 
     static Writefile(filename, mautolist)
@@ -42,8 +46,8 @@ module.exports = class AutoControlconfig {
 
       this.enabled=false;
       this.name = "자동제어";
-      this.starttime = 0;// 시작시간
-      this.endtime = 24*3600;    // 종료시간
+      this.starttime = 0;// 시작시간 초단위 number
+      this.endtime = 24*3600;    // 종료시간 초단위
       this.devids=[];
       this.priority=0;
       this.istimer=true;

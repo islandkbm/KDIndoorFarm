@@ -58,6 +58,46 @@ export default class IndoorFarmAPI {
     }
   }
 
+  static async getmultiple(isensor,isoutdev, isautostate) {
+    
+    let mrepmsg = new responseMessage();
+
+
+    try {
+      const reqmsg = new reqMessage();
+      //자동제어  센서목록, 출력목록 다 가져옴
+      reqmsg.getAutoControlstate = isautostate;
+      reqmsg.getSensors = isensor;
+      reqmsg.getOutputport = isoutdev;
+
+      
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await res.json();
+      
+
+      resdata.AutoControls.forEach((element) => {
+        mrepmsg.AutoControls.push(AutoControl.Clonbyjsonobj(element));
+      });
+
+      resdata.Sensors.forEach((element) => {
+        mrepmsg.Sensors.push(Sensordevice.Clonbyjsonobj(element));
+      });
+
+
+      resdata.Outputs.forEach((element) => {
+        mrepmsg.Outputs.push(Outputdevice.Clonbyjsonobj(element));
+      });
+
+
+
+
+    } catch (error) {
+      console.log(" getmultiple error : " + error);
+    } finally {
+      console.log(" getmultiple finally  : " + mrepmsg);
+      return mrepmsg;
+    }
+  }
 
   static async getautocontrols() {
     

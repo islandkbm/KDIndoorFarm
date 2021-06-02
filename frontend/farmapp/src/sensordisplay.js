@@ -1,43 +1,48 @@
 
-import React, { Component,useState, useEffect } from "react";
-import IndoorFarmAPI from "./indoorfarmapi";
+import React from "react";
+
+function SensorBox(msensor) {
+  let cname ="sen_con";
+  let svalue;
+  let iconsrc="./image/sensor_"+msensor.Sensortype+".png";
 
 
-class SensorBox extends Component {
-    render() {
-      return (
-        <div className="sensorbox">
-          <ul>{this.props.data.Name}</ul>
-          <ul>{this.props.data.valuestring} </ul>
-          <ul>{(this.props.data.errorcount >30)? "연결끊김" :("Err=" + this.props.data.errorcount)} </ul>
-        </div>
-      );
-    }
+  if(msensor.errorcount >30)
+  {
+    cname ="sen_dis";
+    svalue=(<div className="sen_result">   <span className="blinking">연결끊김</span>   </div>);
+  }
+  else{
+
+    svalue=(<div className="sen_value">
+      <label className="value">{msensor.valuestring}</label> 
+    <label className="unit">{" "+msensor.ValueUnit}</label>
+    </div>
+     );
+
   }
 
-  function Sensordisplay(updateintervalmsec, isonlystatus) {
-    console.log("Sensordisplaytest 01");
-  
-    const [msensorsarray, setSensors] = useState([]);
-  
-    useEffect(() => {
-      let interval = null;
-  
-      interval = setInterval(() => {
-        IndoorFarmAPI.getsensordatas().then((sensors) => {
-          setSensors(sensors);
-        });
-      }, updateintervalmsec);
-  
-      return () => clearInterval(interval);
-    }, [msensorsarray]);
-  
+      return (
+        <div className={cname}>
+          <div className="sen_name">
+                        <img src={iconsrc} className="icon" /> {msensor.Name}
+                        </div>
+                    
+                      {svalue}
+                      
+                  
+
+          
+        </div>
+      );
+    
+  }
+
+  function Sensordisplay(msensorsarray, isonlystatus) {
     return (
-      <div className="sensortatble">
-        <h1>sensor display</h1>
-        {msensorsarray.map((localState, index) => (
-          <SensorBox data={localState} />
-        ))}
+      <div className="sensor">
+        <div class="sen_title">SENSOR DISPLAY</div>
+        {msensorsarray.map((localState, index) => SensorBox(localState))}
       </div>
     );
   }

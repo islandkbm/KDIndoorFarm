@@ -2,17 +2,40 @@
 import React, { Component,useState, useEffect } from "react";
 import Sensordisplay from "../sensordisplay";
 import Outputdevicedisplay from "../outputdevicedisplay";
-
+import IndoorFarmAPI from "../indoorfarmapi";
+import responseMessage from "../commonjs/responseMessage"
 
 
 
 
 const Dashboard = () => {
+
+    const [mresponse, setUpdatedata] = useState(new responseMessage());
+
+    //const [msensorsarray, setUpdatesensor] = useState([]);
+    //const [moutdevarray, setUpdatedevice] = useState([]);
+
+    useEffect(() => {
+      let interval = null;
+  
+      interval = setInterval(() => {
+
+        IndoorFarmAPI.getmultiple(true,true,false).then((mrsp) => {
+            setUpdatedata(mrsp);
+
+        });
+
+      }, 1000);
+  
+      return () => clearInterval(interval);
+    }, []);
+
+
     return(
         <div>
-            <h2>dashboard Page</h2>
-            <div className="sensorbocck">{Sensordisplay(2000,true)}</div>
-            <div className="outputblock">{Outputdevicedisplay(2000,true)}</div>
+        
+            {Sensordisplay(mresponse.Sensors,true)}
+            {Outputdevicedisplay(mresponse.Outputs,true)}
 
         </div>
     )
