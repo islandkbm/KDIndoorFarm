@@ -32,7 +32,7 @@ const Dashboard = () => {
 
 
     return(
-        <div>
+      <div className="display">
         
             {Sensordisplay(mresponse.Sensors,true)}
             {Outputdevicedisplay(mresponse.Outputs,true)}

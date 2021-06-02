@@ -4,166 +4,61 @@ import IndoorFarmAPI from "../indoorfarmapi";
 import { ResponsiveBump } from '@nivo/bump'
 
 
+import { LineChart, ResponsiveContainer,Line, YAxis, XAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
-function MyResponsiveBump( data)
+function MyLineRechart()
 {
 
-return (
-  <ResponsiveBump
-      data={data}
-      margin={{ top: 40, right: 100, bottom: 40, left: 60 }}
-      colors={{ scheme: 'spectral' }}
-      lineWidth={3}
-      activeLineWidth={6}
-      inactiveLineWidth={3}
-      inactiveOpacity={0.15}
-      pointSize={10}
-      activePointSize={16}
-      inactivePointSize={0}
-      pointColor={{ theme: 'background' }}
-      pointBorderWidth={3}
-      activePointBorderWidth={3}
-      pointBorderColor={{ from: 'serie.color' }}
-      axisTop={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: '',
-          legendPosition: 'middle',
-          legendOffset: -36
-      }}
-      axisRight={null}
-      axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: '',
-          legendPosition: 'middle',
-          legendOffset: 32
-      }}
-      axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'ranking',
-          legendPosition: 'middle',
-          legendOffset: -40
-      }}
-  />
-);
-    }
+    const data = [
+        {
+            "name": "Jan 2019",
+            "Product A": 3432,
+            "Procuct B": 2342
+        },
+        {
+            "name": "Feb 2019",
+            "Product A": 2342,
+            "Procuct B": 3246
+        },
+        {
+            "name": "Mar 2019",
+            "Product A": 4565,
+            "Procuct B": 4556
+        },
+        {
+            "name": "Apr 2019",
+            "Product A": 6654,
+            "Procuct B": 4465
+        },
+        {
+            "name": "May 2019",
+            "Product A": 8765,
+            "Procuct B": 4553
+        }
+    ];
+
+    
+        return (
+          <ResponsiveContainer
+        width="100%"
+      >
+            <LineChart  height={250} data={data}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="Product A" stroke="#0095FF" />
+                <Line type="monotone" dataKey="Procuct B" stroke="#FF0000" />
+            </LineChart>
+            </ResponsiveContainer>
+        );
+    
+}
 
 
 const Sensorpage = () => {
-
-  const h1data = [
-    {
-      "id": "First",
-      "data": [
-        {
-          "x": 2000,
-          "y": 4
-        },
-        {
-          "x": 2001,
-          "y": 7
-        },
-        {
-          "x": 2002,
-          "y": 11
-        },
-        {
-          "x": 2003,
-          "y": 12
-        },
-        {
-          "x": 2004,
-          "y": 2
-        }
-      ]
-    },
-    {
-      "id": "Second",
-      "data": [
-        {
-          "x": 2000,
-          "y": 10
-        },
-        {
-          "x": 2001,
-          "y": 2
-        },
-        {
-          "x": 2002,
-          "y": 3
-        },
-        {
-          "x": 2003,
-          "y": 7
-        },
-        {
-          "x": 2004,
-          "y": 8
-        }
-      ]
-    },
-    {
-      "id": "Last",
-      "data": [
-        {
-          "x": 2000,
-          "y": 9
-        },
-        {
-          "x": 2001,
-          "y": 5
-        },
-        {
-          "x": 2002,
-          "y": 8
-        },
-        {
-          "x": 2003,
-          "y": 5
-        },
-        {
-          "x": 2004,
-          "y": 12
-        }
-      ]
-    },
-    {
-      "id": "Serie 4",
-      "data": [
-        {
-          "x": 2000,
-          "y": 7
-        },
-        {
-          "x": 2001,
-          "y": 4
-        },
-        {
-          "x": 2002,
-          "y": 2
-        },
-        {
-          "x": 2003,
-          "y": 11
-        },
-        {
-          "x": 2004,
-          "y": 9
-        }
-      ]
-    }
-  
-  ];
 
 
     const [msensorsarray, setSensors] = useState([]);
@@ -183,11 +78,12 @@ const Sensorpage = () => {
     
     return(
         
-            <div className="sensorbocck">
+            <div>
               {Sensordisplay(msensorsarray,true)}
 
-
-
+              <div className="chartcontainer">
+                {MyLineRechart()}
+                </div>
               </div>
         
     )

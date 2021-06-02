@@ -1,7 +1,7 @@
 import "./App.css";
 
 import React, { Component, useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard";
 import Sensorpage from "./pages/sensorpage";
@@ -23,6 +23,7 @@ function App() {
       <Router>
         <div className="indoor">
           <div className="left">
+            <nav>
             <div className="name">
               <img src="./image/kdgb.png" className="name_img" /> SFC-300
             </div>
@@ -53,23 +54,29 @@ function App() {
                 </div>
               </Link>
             </div>
+            </nav>
           </div>
 
           <div className="right">
-            <div class="top">
-              <div class="top_name"> NO. 1 &nbsp;&nbsp; SENSOR NODE</div>
-              <div class="top_log">
-                <div class="login">LOG IN</div>
-                <div class="join">JOIN</div>
+            <div className="top">
+              <div className="top_name"> NO. 1 &nbsp;&nbsp; SENSOR NODE</div>
+              <div className="top_log">
+                <div className="login">LOG IN</div>
+                <div className="join">JOIN</div>
               </div>
             </div>
 
-            <div class="board">
+            <div className="board">
+              
+              <Switch>
+              
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/devices" component={Devicepage} />
               <Route path="/about" component={About} />
               <Route path="/sensor" component={Sensorpage} />
               <Route path="/autocontrol" component={Autocontrolpage} />
+              <Route path="/" component={Dashboard} />
+              </Switch>
             </div>
           </div>
         </div>
