@@ -1,9 +1,11 @@
 .indoor{
     background: rgb(180, 221, 210);
-    width: 1885px;
+    width: 1900px;
     height: 98vh;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
+
 }
 
 .left{
@@ -62,21 +64,34 @@
 .top{
     font-family: 'Titillium Web', sans-serif;
     display: inline-flex;
+    width : 1600px;
+    height : 70px;
+
 
 }
 .top_name{
     font-size : 20px;
     text-align: left;
     height: 80px;
-    margin-left : 40px;
     line-height:80px;
+    margin-left : 70px;
     color: #424242;
+    flex: none;
+    display: inline-block;
+
 }
 
+.node_name{
+    margin-right : 3px;
+    margin-left : 10px;
+}
 
 .top_log{
     display: inline-flex;
-    margin: 25px 0 0 450px;
+    margin-left: auto;
+    align-content: center;
+    margin-right : 80px;
+    margin-top : 25px;
 }
 
 .login, .join{
@@ -89,6 +104,7 @@
     margin-left : 10px;   
     line-height: 30px;
     color: #037c7c; 
+    
 
 }
 
@@ -102,56 +118,53 @@
 
 .display{
     margin : 10px 0 0 10px;
-    display: inline-flex;
-    justify-content: space-around;
     font-weight: bold;
 }
 
-.sensor{
-    font-size: 15px;
-    margin-left : 5px;
+.sensor, .output{
+    margin : 30px 20px 30px 20px;
     flex-direction: column;
-    width: 460px;
-}
-.output{
-    font-size: 15px;
-    flex-direction: column;
-    width: 400px;
+    width: 1510px;
+    background: rgba(230, 236, 233, 0.411);
+    padding : 15px;
+
+
 }
 
-.sen_title, .out_title{
-    margin : 0 0 10px 8px;
-    font-family: 'Titillium Web', sans-serif;
-    font-size : 18px;
-    color: #037c7c; 
-}
 
 .sen_con {
     font-size: 12px;
-    margin: 3px;
+    margin: 10px 0 10px 20px;
     padding : 8px;
     text-align: center;
-    background: rgba(230, 236, 233, 0.575);
     border-radius: 8px;
-    width : 120px;
-    height : 100px;
+    width : 140px;
+    height : 110px;
     justify-content: space-around;
     display: inline-flex;
     flex-direction: column;
+    border-color:#037a7a;
+    border-style: solid;
+    border-width : 1px;
+    background: white;
+    
 }
 
 .sen_dis {
     font-size: 12px;
-    margin: 3px;
+    margin: 10px 0 10px 20px;
     padding : 8px;
     text-align: center;
-    background: rgba(180, 221, 210, 0.753);
     border-radius: 8px;
-    width : 120px;
-    height : 100px;
+    width : 140px;
+    height : 110px;
     justify-content: space-around;
     display: inline-flex;
     flex-direction: column;
+    color: #013030;
+    border-color:#037a7a;
+    border-style: solid;
+    border-width : 1px;
 }
 
 .sen_name{
@@ -161,59 +174,103 @@
 
 
 .sen_result{
-    font-size: 14px;
-    color: #013030;
+    font-size: 12px;
+    color: white;
+    background: #036e6eb7;
     font-weight: bold;
-    background: white;
     width : 80px;
     height : 25px;
     line-height : 25px;
     border-radius: 5px;
     text-align : center;
-    margin-left : 20px;  
+    margin-left : 30px;
 }
 
+
 .value {
-    font-size: 15px;
+    font-size: 17px;
     color: #037a7a;
 }
 
 .unit {
-    font-size: 12px;
-    color: #424242;
+    font-size: 13px;
+    color: #037a7a;
 }
-.out{
-    background: rgba(230, 236, 233, 0.575);
-    border-radius: 8px;
-    margin-top: 15px;
-    width : 410px;
-    line-height: 30px;
-}
+
 .out_con {
-    display: inline-flex;
-    justify-content: space-between;
-    padding : 8px;
+    padding : 10px;
     font-size: 12px;
+    width : 140px;
+    height : 140px;
+    justify-content: space-around;
+    display: inline-flex;
+    flex-direction: column;
+    margin: 10px 0 10px 20px;
+    text-align: center;
+    border-radius: 8px;
+    border-color:#037a7a;
+    border-style: solid;
+    border-width : 1px;
+    background: white;
+
+
 }
+
+.out_man {
+    padding : 10px;
+    font-size: 12px;
+    width : 140px;
+    height : 140px;
+    justify-content: space-around;
+    display: inline-flex;
+    flex-direction: column;
+    margin: 10px 0 10px 20px;
+    text-align: center;
+    border-radius: 8px;
+    color: #013030;
+    border-color:#037a7a;
+    border-style: solid;
+    border-width : 1px;
+
+}
+
 
 .out_value{
     font-size: 13px;
     color: #424242;
-    margin : 5px 20px 5px 20px;
-    width: 60px;
+    width: 140px;
+    height : 30px;
+    margin : 20px 0 20px 0;
+
 }
 .out_result{
-    font-size: 13px;
+    font-size: 12px;
     color: #424242;
-    margin : 5px 20px 5px 20px;
-    width: 100px;
+    width: 140px;
+    height : 30px;
+
 }
 
 .out_name{
     font-size: 13px;
     color: #424242;
-    margin : 5px 20px 5px 20px;
     width : 140px;
+    height : 40px;
+    line-height : 40px;
+    margin-top: 5px;
+}
+
+.man_result{
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background: #036e6eb7;
+    width : 80px;
+    height : 25px;
+    line-height : 25px;
+    border-radius: 5px;
+    text-align : center;
+    margin-left: 30px;
 }
 
 .icon {
@@ -238,26 +295,210 @@
 
  .out_button{
     display: inline-flex;
-    font-size: 10px;
+    text-align: center;
+    justify-content: center;
+
  }
 .button_on, .button_off{
     font-family: 'Titillium Web', sans-serif;
     border-radius: 4px;
     margin-right :5px;
-    width: 100px;
-    height: 30px;
-    background : white;
-    color: #013030;
+    width: 60px;
+    height: 23px;
+    font-size: 12px;
+    color: white;
     font-weight : bold;
-    border-color:#037a7a;
-    border-style: solid;
+    border: none;
+    background: #036e6eb7;
 }
+
 .button_on:hover, .button_off:hover{
     font-family: 'Titillium Web', sans-serif;
     font-weight : bold;
     border-radius: 4px;
-    background: rgba(180, 221, 210, 0.753);
-    color: #424242;
-     
+    color: #013030;
+    background : white;
+    border: none;
+    border-width : 1px;
+    border-color:#037a7a;
+    border-style: solid;
+    font-size: 12px;
 }
 
+.auto{
+    display: flex;
+    flex-direction: column;
+    width : 1200px;
+    font-size : 13px;
+    color: #424242;
+    font-weight : bold;
+
+}
+.select{
+    display: inline-flex;
+    margin: 20px 0 20px 30px;
+}
+
+.select_sort{
+    margin-left : 10px;
+    margin-right : 20px;
+}
+
+
+.add_button{
+    font-size: 12px;
+    color: white;
+    font-weight : bold;
+    border: none;
+    background: #036e6eb7;
+    border-radius: 4px;
+    width : 55px;
+    text-align : center;
+}
+
+
+.auto_select{
+    background: rgba(230, 236, 233, 0.411);
+    border-radius: 4px;
+    margin : 10px;
+}
+.auto_control{
+    flex-direction: column; 
+
+}
+
+.auto_input, .auto_control, .auto_title, .auto_name, .auto_stop{
+    display: inline-flex;
+    padding: 10px;
+}
+
+.auto_input{
+    margin-left: 10px;
+}
+
+input[type=text] {
+    border : 1px solid #424242;
+    border-radius : 3px;
+    margin-left: 5px;
+
+}
+input[type=radio] {
+    margin-right: 5px;
+    margin-left : 25px;
+
+}
+
+input[type=number] {
+    border : 1px solid #424242;
+    border-radius : 3px;
+    width : 50px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+input[type=time] {
+    border : 1px solid #424242;
+    border-radius : 3px;
+    margin-left: 5px;
+}
+
+input[type=checkbox] {
+    margin-right: 5px;
+    margin-left : 20px;
+}
+
+
+.aut_in{
+    margin-right : 30px;
+}
+.device{
+    background: rgba(230, 236, 233, 0.411);
+    border-radius: 4px;
+    margin : 10px;
+    padding: 20px;
+
+}
+
+.dev_select{
+    margin: 20px 0 10px 0;
+}
+
+.two_select{
+    background: rgba(230, 236, 233, 0.411);
+    border-radius: 4px;
+    margin : 10px;
+    padding: 20px;
+
+}
+.dev_name{
+    margin: 10px;
+
+}
+.max_name, .ofnum_name{
+    display: inline-flex;
+    margin: 20px 0 10px 20px;
+}
+
+.con_sen{
+    margin: 30px;
+}
+.cons_name{
+    padding: 10px;
+    margin-left : 10px;
+    margin-bottom: 20px; 
+}
+
+.rrd{
+    width : 100px;
+}
+
+.cont_save, .cont_reset{
+    font-size: 13px;
+    color: white;
+    font-weight : bold;
+    border: none;
+    background: #036e6ecc;
+    border-radius: 4px;
+    width : 60px;
+    text-align : center;
+    height : 30px;
+    margin : 30px 0 10px 30px;
+}
+
+
+
+.auto_seln{
+    display: inline-flex;
+    background: rgba(230, 236, 233, 0.918);
+    border-radius: 4px;
+    margin : 10px;
+    height : 50px;
+    font-size : 15px;
+    line-height : 35px;
+
+}
+
+.auto_sent{
+    padding : 10px;
+    margin: 0 10px 0 30px;
+}
+
+
+.change_but{
+    font-size: 13px;
+    color: white;
+    font-weight : bold;
+    border: none;
+    background: #036e6ecc;
+    border-radius: 4px;
+    width : 80px;
+    text-align : center;
+    height : 25px;
+    margin-top : 13px;
+}
+
+
+
+.auto_result{
+    margin: 0 20px 0 30px;
+}

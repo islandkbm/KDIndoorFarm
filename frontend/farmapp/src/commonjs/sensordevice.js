@@ -156,13 +156,13 @@ const KDSensorTypeEnum = Object.freeze(
 
         let strvalue = "";
 
-        if (isWithname == true) {
+        if (isWithname === true) {
 
             strvalue += this.Name + " ";
         }
 
         strvalue += this.value.toFixed(this.SignificantDigit);
-        if (isWithunit == true) {
+        if (isWithunit === true) {
             strvalue += " " + this.ValueUnit;
         }
 

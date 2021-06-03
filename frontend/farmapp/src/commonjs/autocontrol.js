@@ -1,6 +1,5 @@
-
 const AutoControlStatus = require("./autocontrolstatus");
-const AutoControlconfig = require("./autocontrolconfig");
+
 
 module.exports = class AutoControl {
   constructor(mconfig) {
@@ -16,7 +15,7 @@ module.exports = class AutoControl {
   controlbypwm() {
     let mstatus = true;
 
-    if (this.mState.pwmonoffstate == true) {
+    if (this.mState.pwmonoffstate === true) {
       this.mState.pwmontime_count++;
       if (this.mState.pwmontime_count >= this.mConfig.pwmontime) {
         this.mState.pwmofftime_count = 0;
@@ -43,7 +42,7 @@ module.exports = class AutoControl {
 
     for (const ms of msensors) {
       if (ms.UniqID === this.mConfig.sensorid) {
-        if (this.mConfig.condition == "up") {
+        if (this.mConfig.condition === "up") {
           if (ms.value > this.mConfig.onvalue) {
             mstatus = true;
           } else {

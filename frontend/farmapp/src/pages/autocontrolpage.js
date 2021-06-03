@@ -101,7 +101,6 @@ const Autocontrolpage = () => {
             }
 
           //  setupselected(AutoControlconfig.deepcopy(copycfg));
-
         }
 
         if (e.target.name === "devcheck") {
@@ -135,10 +134,10 @@ const Autocontrolpage = () => {
 
       function devicecheckbox(mitem) {
         return (
+          
           <ui>
-            <input type="checkbox" key={copycfg.uniqid} name="devcheck" defaultChecked={mitem.seleted} id={mitem.uniqkey} />
-            {mitem.title}
-          </ui>
+            <input type="checkbox" key={copycfg.uniqid} name="devcheck" defaultChecked={mitem.seleted} id={mitem.uniqkey} />  {mitem.title}
+            </ui>
         );
       }
 
@@ -172,42 +171,54 @@ const Autocontrolpage = () => {
       }
 
       return (
-        <div className="autosetupbox">
-          
-           <div className="autoenable" onChange={inputonchangeHandler}>
-                <h4>자동제어 운전변경: 
-                <input type="radio" key={"enable" + copycfg.uniqid} name="autoenable" defaultChecked={copycfg.enabled} id="enable" /> 자동운전
-                <input type="radio" key={"disable" + copycfg.uniqid} name="autoenable" defaultChecked={copycfg.enabled === false} id="disable"/>정지(수동제어)
-                </h4>
-              </div>
-
-          <div className="autosetupinnerbox" >
-            <ul>{}</ul>
-            <label>이름: </label>
-            <input type="text" key={"name" + copycfg.uniqid} defaultValue={copycfg.name} name="name" onChange={inputonchangeHandler} />
-
-            <label>시작시간: </label>
-            <input type="time" key={"starttime" + copycfg.uniqid} defaultValue={secToTime(copycfg.starttime)} name="starttime" onChange={inputonchangeHandler} />
-            <label>종료시간: </label>
-            <input type="time" key={"endtime" + copycfg.uniqid} defaultValue={secToTime(copycfg.endtime)} name="endtime" onChange={inputonchangeHandler} />
-            <p></p>
-
-            <div className="outportselectbox" onChange={inputonchangeHandler}>
-              <h4>출력장치 선택</h4>
-              {dlist.map((localState, index) => devicecheckbox(localState))}
+        <div className="auto_control">
+          <div className="auto_title" onChange={inputonchangeHandler}>
+            <div className="auto_name">자동제어 운전변경 :</div>
+            <div className="auto_stop">
+              <input type="radio" key={"enable" + copycfg.uniqid} name="autoenable" defaultChecked={copycfg.enabled} id="enable" /> 자동운전
+              <input type="radio" key={"disable" + copycfg.uniqid} name="autoenable" defaultChecked={copycfg.enabled === false} id="disable" /> 정지(수동제어)
             </div>
-            <p></p>
+          </div>
+
+          <div className="autosetupinnerbox">
+          <div className="auto_input">
+            <div className="aut_in">이름 :
+            <input type="text" key={"name" + copycfg.uniqid} defaultValue={copycfg.name} name="name" onChange={inputonchangeHandler} />
+            </div>
+            <div className="aut_in">시작시간 :
+            <input type="time" key={"starttime" + copycfg.uniqid} defaultValue={secToTime(copycfg.starttime)} name="starttime" onChange={inputonchangeHandler} />
+            </div>
+            <div className="aut_in">종료시간  :
+            <input type="time" key={"endtime" + copycfg.uniqid} defaultValue={secToTime(copycfg.endtime)} name="endtime" onChange={inputonchangeHandler} />
+            </div>
+            
+            </div>
+
+
+
+            
+            <div className="device" onChange={inputonchangeHandler}>
+            <div className="dev_name">출력장치 선택</div>
+            <div className="dev_select">
+              {dlist.map((localState, index) => devicecheckbox(localState))}
+              </div>
+            </div>
+            
+
+            
             <div>
-              <div className="controlselectbox" onChange={inputonchangeHandler}>
+              <div className="two_radio" onChange={inputonchangeHandler}>
                 <input type="radio" key={"timer" + copycfg.uniqid} name="controlsel" defaultChecked={copycfg.istimer} id="timer" /> 타임머 제어
                 <input type="radio" key={"sensor" + copycfg.uniqid} name="controlsel" defaultChecked={copycfg.istimer === false} id="sensor" />
                 센서제어
               </div>
 
               <div className="sensorconditionbox" style={copycfg.istimer === false ? {} : { display: "none" }}>
-                <div className="sensorselectbox" onChange={inputonchangeHandler}>
-                  <h4>센서선택</h4>
+                <div className="con_sen" onChange={inputonchangeHandler}>
+                <div className="cons_name">센서선택</div>
+                <div className="cons_radio">
                   {slist.map((localState, index) => sensorselectbox(localState))}
+                  </div>
                 </div>
 
                 <div className="conditionselectbox" onChange={inputonchangeHandler}>
@@ -229,15 +240,13 @@ const Autocontrolpage = () => {
               <input type="number" key={"onetime_idle" + copycfg.uniqid} defaultValue={copycfg.onetime_idle} name="onetime_idle" onChange={inputonchangeHandler} />
             </div>
 
-            <p></p>
+            
 
-            <button onClick={() => setupSave(copycfg)} id="editcheck">
-              {" "}
-              저장{" "}
-            </button>
-            <button onClick={() => setupselected(null)} id="editcheck">
-              취소{" "}
-            </button>
+            <div className="control_end">
+            <button className = "cont_save" onClick={() => setupSave(copycfg)} id="editcheck">저장  </button>
+            <button className = "cont_reset" onClick={() => setupselected(null)} id="editcheck">최소 </button>
+            </div>
+
           </div>
         </div>
       );
@@ -245,13 +254,15 @@ const Autocontrolpage = () => {
   }
   function autocontrolbox(mydata) {
     return (
-      <div className="autocontrolbox">
-        <ui>{mydata.mConfig.name}</ui>
+      <div className="auto_seln">
+        <label className="auto_inname">{mydata.mConfig.name}</label>
 
-        <ui>{mydata.mConfig.enabled == true ? "  작동중" : "  정지됨"}</ui>
-        <button onClick={() => setupselected(AutoControlconfig.deepcopy(mydata.mConfig))} id="editcheck">
-          설정변경
-        </button>
+        <label className="auto_result">{mydata.mConfig.enabled == true ? "  작동중" : "  정지됨"}</label>
+        <div className="auto_change">
+          <button className="change_but" onClick={() => setupselected(AutoControlconfig.deepcopy(mydata.mConfig))} id="editcheck">
+            설정변경
+          </button>
+        </div>
       </div>
     );
   }
@@ -265,18 +276,26 @@ const Autocontrolpage = () => {
 
   return (
     <div>
-      <h4>Autocontrol Page</h4>
-      <div className="controltop">
-        정렬 :
-        <select name="pets" id="pet-select">
-          <option value="1">시간순서</option>
-          <option value="2">이름순서</option>
-          <option value="3">카테고리</option>
-        </select>
-        <button onClick={() => onAdd()}>+ 추가</button>
+      <div className="auto">
+        <div className="select">
+          <div className="select_name">정렬 :</div>
+          <div class="select_sort">
+            <select name="sort">
+              <option value="1">시간순서</option>
+              <option value="2">이름순서</option>
+              <option value="3">카테고리</option>
+            </select>
+          </div>
+          <div className="select_add">
+            <button className="add_button" onClick={() => onAdd()}>
+              + 추가
+            </button>
+          </div>
+        </div>
       </div>
       <div className="autocontroltable">
         {Autocontroleditbox(mSelecteditem, mSensors, mDevices)}
+
         {mAutolist.map((localState, index) => autocontrolbox(localState))}
       </div>
     </div>

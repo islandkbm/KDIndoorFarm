@@ -1,20 +1,18 @@
 import "./App.css";
 
-import React, { Component, useState, useEffect } from "react";
+import React, {  useState } from "react";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard";
 import Sensorpage from "./pages/sensorpage";
 import Devicepage from "./pages/devicepage";
 import Autocontrolpage from "./pages/autocontrolpage";
+import Settingpage from "./pages/settingpage";
 import About from "./pages/about";
 
 function App() {
   const [hwchannel, sethwchannel] = useState(0);
-  function handleChange(e) {
-    sethwchannel(e.target.value);
-    console.log(hwchannel);
-  }
+  
 
   return (
     <div className="App">
@@ -75,6 +73,7 @@ function App() {
               <Route path="/about" component={About} />
               <Route path="/sensor" component={Sensorpage} />
               <Route path="/autocontrol" component={Autocontrolpage} />
+              <Route path="/setup" component={Settingpage} />
               <Route path="/" component={Dashboard} />
               </Switch>
             </div>
