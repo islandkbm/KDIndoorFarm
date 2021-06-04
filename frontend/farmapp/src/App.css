@@ -36,6 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+
+.outportsetupbox
+{
+  width: 100%;
+  background: lightsalmon;
+
+}
+
 .relaygroupbox
 {
   width: 100%;
@@ -46,8 +55,8 @@
 }
 .relaybox
 {
-  width: 120px;
-  height: 80px;
+  width: 130px;
+  height:130px;
   background: lightseagreen;
   margin: 2px+2px+2px+2px;
 

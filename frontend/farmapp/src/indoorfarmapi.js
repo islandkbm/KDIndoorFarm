@@ -210,6 +210,29 @@ export default class IndoorFarmAPI {
   }
   
 
+  static async setDeviceconfigsetup(mDevcfg) {
+   
+    let isok =false;
+
+    console.log(" setDeviceconfigsetup rsp : " + isok);
+    try {
+      const reqmsg = new reqMessage();
+      reqmsg.setDeviceconfig = true;
+      reqmsg.Deviceconfigitem = mDevcfg;
+      
+      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await res.json();
+      console.log(" setDeviceconfigsetup rsp : " + resdata.IsOK);
+      isok=true;
+
+    } catch (error) {
+      console.log(" setDeviceconfigsetup error : " + error);
+    } finally {
+      console.log(" setDeviceconfigsetup finally  : " + isok);
+      return isok;
+    }
+
+  }
 
 
 }

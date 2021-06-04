@@ -120,6 +120,8 @@ const Autocontrolpage = () => {
           if (isexist === false) {
             copycfg.devids.push(Number(e.target.id));
           }
+          //console.log({copycfg});
+
         }
       }
 
@@ -158,7 +160,7 @@ const Autocontrolpage = () => {
         let seleted = false;
 
         for (const di of copycfg.devids) {
-          if (di === dev.UniqID) {
+          if (di == dev.UniqID) {
             console.log("select dev id : " + dev.UniqID);
             seleted = true;
             break;

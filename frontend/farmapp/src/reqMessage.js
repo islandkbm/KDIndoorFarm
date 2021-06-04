@@ -11,9 +11,11 @@ export default class reqMessage{
 
     setManualControl=false;
     setAutocontrol=false
+    setDeviceconfig=false
 
     OutputManual=[];
     Autoconfigitem=null;
+    Deviceconfigitem=null;
 
 
 

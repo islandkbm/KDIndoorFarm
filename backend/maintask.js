@@ -27,6 +27,43 @@ var mAutolist = []; //자동제어
 var mOutputonoff = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 릴레이상태 0:off, 1:on 2:local
 
 
+
+function savedeviceconfig(mcfgitem)
+{
+
+  
+  let mcfglist=  Outputdevice.Readfile(outdevicefilename);
+  let isnew=true;
+
+    for(let i=0;i< mcfglist.length ; i++)
+    {
+      let mcfg =mcfglist[i];
+      if(mcfg.UniqID === mcfgitem.UniqID)
+      {
+        isnew=false;
+
+        mcfglist[i] = mcfgitem;
+        break;
+
+      }
+    }
+    if(isnew ===true)
+    {
+      mcfglist.push(mcfgitem);
+    }
+
+    Outputdevice.Writefile(outdevicefilename,mcfglist );
+
+
+    //다시읽고 자동제어 다시시작
+    mOutDevices = Outputdevice.Readfile(outdevicefilename);
+    Autocontrolload(null);
+
+
+}
+
+
+
 function saveautoconfig(mcfgitem)
 {
   let mcfglist= AutoControlconfig.Readfile(autofilename);
@@ -80,7 +117,8 @@ function postapi(req, rsp) {
       console.log("setManualControl outputOnoffstring:   " + outputOnoffstring);
       rspmsg.IsOK = true;
     }
-  } else if(reqmsg.setAutocontrol ===true)
+  } 
+  else if(reqmsg.setAutocontrol ===true)
   {
 
     if (reqmsg.Autoconfigitem) {
@@ -93,6 +131,21 @@ function postapi(req, rsp) {
 
     rspmsg.IsOK = true;
   }
+  else if(reqmsg.setDeviceconfig ===true)
+  {
+
+    if (reqmsg.Deviceconfigitem) {
+      let acfg= Outputdevice.Clonbyjsonobj(reqmsg.Deviceconfigitem);
+      console.log("setDevice id:   " + acfg.Uniqid  + ", name :" +acfg.Name ) ;
+      savedeviceconfig(acfg);
+
+
+    }
+
+    rspmsg.IsOK = true;
+  }
+
+
   else{
 
   if (reqmsg.getAutoControl === true) {
@@ -337,7 +390,7 @@ function setoutputchangebyautocontrol(mautocfg,onoffstate,  isclear)
 {
   for (const mdevid of mautocfg.devids) {
     for (let mdev of mOutDevices) {
-      if (mdev.UniqID === mdevid) {
+      if (mdev.UniqID == mdevid) {
         if(isclear ===true)
         {
           setOutput(mdev.Channel, false);

@@ -9,15 +9,17 @@ class Outputdevice {
   });
 
   static OutDeviceTypeEnum = Object.freeze({
-    ODT_None: 0,
+    ODT_RELAY: 0,
     ODT_PUMP: 1, //
     ODT_FAN: 2,
     ODT_VALVE: 3,
     ODT_LED: 4,
     ODT_COOLER: 5,
     ODT_HEATER: 6,
-    ODT_RELAY: 7,
+    ODT_POWER: 7,
+    ODT_NOZZLE: 8,
     ODT_ETC: 99,
+    ODT_DELETE: 9999, //장치삭제
   });
 
   static Writefile(filename, mlist) {
@@ -30,7 +32,14 @@ class Outputdevice {
 
     let alist = [];
     objlist.forEach((element) => {
-      alist.push(Object.assign(new Outputdevice(), element));
+
+       let mdobj = Object.assign(new Outputdevice(), element);
+
+       //삭제가 아니면 
+       if(mdobj.DevType !=  Outputdevice.OutDeviceTypeEnum.ODT_DELETE)
+       {
+        alist.push(mdobj);
+       }
     });
 
     return alist;
@@ -38,6 +47,16 @@ class Outputdevice {
 
   static Clonbyjsonobj(mobj) {
     return Object.assign(new Outputdevice(), mobj);
+  }
+
+  static CreateDefulatDevice(relaynum) {
+    let newdev =new Outputdevice();
+    newdev.UniqID=relaynum;
+    newdev.Name="릴레이-"+(Number(relaynum)+1);
+    newdev.Channel =relaynum;
+    newdev.DevType  =Outputdevice.OutDeviceTypeEnum.ODT_RELAY;
+    
+    return newdev;
   }
 
   constructor() {

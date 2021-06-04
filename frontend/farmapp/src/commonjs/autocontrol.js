@@ -35,6 +35,7 @@ module.exports = class AutoControl {
     return mstatus;
   }
   controlbytimer() {
+    
     return true;
   }
   controlbysensor(msensors) {
@@ -74,7 +75,10 @@ module.exports = class AutoControl {
     }
 
     if (timesecnow >= this.mConfig.starttime && timesecnow < this.mConfig.endtime) {
-      if (this.istimer === true) {
+
+      
+
+      if (this.mConfig.istimer === true) {
         mstatus = this.controlbytimer();
       } else if (this.mConfig.pwmcontrolenable === true) {
         mstatus = this.controlbypwm();
