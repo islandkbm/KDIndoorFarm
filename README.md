@@ -12,7 +12,7 @@
 
 # 설치 (기본 nodejs 설치)
 
-## <a name="charp_rtu"></a>백엔드 
+## <a name="charp_rtu"></a>backend 설치 
 
 ```rust
 
@@ -34,6 +34,7 @@
     > npm install  create-react-app --save
     > create-react-app farmapp
     > npm install http-proxy-middleware --save
+    > npm install recharts --save
 
  setProxy.js 추가
     pakage.json 추가
