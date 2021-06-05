@@ -20,7 +20,7 @@ const Dashboard = () => {
   
       interval = setInterval(() => {
 
-        IndoorFarmAPI.getmultiple(true,true,false).then((mrsp) => {
+        IndoorFarmAPI.getRequest(true,true,false).then((mrsp) => {
             setUpdatedata(mrsp);
 
         });

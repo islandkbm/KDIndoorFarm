@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sensordisplay from "../sensordisplay";
 import IndoorFarmAPI from "../indoorfarmapi";
-import { ResponsiveBump } from '@nivo/bump'
+
 
 
 import { LineChart, ResponsiveContainer,Line, YAxis, XAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
