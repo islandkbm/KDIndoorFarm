@@ -255,11 +255,29 @@ const Autocontrolpage = () => {
     }
   }
   function autocontrolbox(mydata) {
+
+    let autostate=(<label className="auto_result">  정지됨</label>);
+    
+    if(mydata.mConfig.enabled ===true){
+      let onofficon = "./image/" + (mydata.mState.onoffstate ? 'on':'off')+ ".png";
+
+      ///<img src={onofficon} className="onoff" />   
+      autostate=(
+      <label className="auto_result">  작동중
+       
+      </label>
+      );
+    }
+
+    
+
+
+    
     return (
       <div className="auto_seln">
         <label className="auto_inname">{mydata.mConfig.name}</label>
 
-        <label className="auto_result">{mydata.mConfig.enabled == true ? "  작동중" : "  정지됨"}</label>
+        {autostate}
         <div className="auto_change">
           <button className="change_but" onClick={() => setupselected(AutoControlconfig.deepcopy(mydata.mConfig))} id="editcheck">
             설정변경
