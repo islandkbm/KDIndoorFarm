@@ -4,17 +4,14 @@ import manualMessage from "./manualmessage";
 import Outputdevice from "./commonjs/outputdevice";
 
 function manualonoff(channel, onoff) {
-  if (onoff == true) {
-    console.log(" manualonoff  on channel : " + channel);
-  } else {
-    console.log(" manualonoff  off channel : " + channel);
-  }
+  
 
   const mdev = new manualMessage();
   mdev.hardwareChannel = channel;
   mdev.isonoff = onoff;
 
   IndoorFarmAPI.setmanualonoff(mdev);
+  alert("ok");
 }
 
 function outputdevbox(mydata, isonlystatus) {

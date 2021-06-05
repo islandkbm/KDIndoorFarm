@@ -34,7 +34,18 @@ const Settingpage = () => {
 */
   function setupSave(mcfg) {
     console.log("setupSave uidd: " + mcfg.UniqID + " name : " + mcfg.Name);
+    
     IndoorFarmAPI.setDeviceconfigsetup(mcfg).then((ret) => {
+      if(ret ==true)
+      {
+        alert("저장되었습니다.");
+        relayeditselected(null);
+      }
+      else{
+        
+      }
+
+
       console.log("setDeviceconfigsetup  uid: " + ret);
     });
   }
