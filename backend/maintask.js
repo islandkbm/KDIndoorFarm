@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 
 const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 
@@ -12,11 +12,8 @@ const Outputdevice = require("../frontend/farmapp/src/commonjs/outputdevice.js")
 const Sensordevice = require("../frontend/farmapp/src/commonjs/sensordevice.js");
 const responseMessage = require("../frontend/farmapp/src/commonjs/responseMessage");
 
-
-const outdevicefilename= '../indoorfarmoutputdevicelist.json';
-const autofilename= '../indoorfarmautocontollist.json';
-
-
+const outdevicefilename = "../indoorfarmoutputdevicelist.json";
+const autofilename = "../indoorfarmautocontollist.json";
 
 var istaskStopByerror = false;
 var outputOnoffstring = "000000000000000000000000";
@@ -26,85 +23,59 @@ var mSensors = []; //센서정보
 var mAutolist = []; //자동제어
 var mOutputonoff = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 릴레이상태 0:off, 1:on 2:local
 
+function savedeviceconfig(mcfgitem) {
+  let mcfglist = Outputdevice.Readfile(outdevicefilename);
+  let isnew = true;
 
+  for (let i = 0; i < mcfglist.length; i++) {
+    let mcfg = mcfglist[i];
+    if (mcfg.UniqID === mcfgitem.UniqID) {
+      isnew = false;
 
-function savedeviceconfig(mcfgitem)
-{
-
-  
-  let mcfglist=  Outputdevice.Readfile(outdevicefilename);
-  let isnew=true;
-
-    for(let i=0;i< mcfglist.length ; i++)
-    {
-      let mcfg =mcfglist[i];
-      if(mcfg.UniqID === mcfgitem.UniqID)
-      {
-        isnew=false;
-
-        mcfglist[i] = mcfgitem;
-        break;
-
-      }
+      mcfglist[i] = mcfgitem;
+      break;
     }
-    if(isnew ===true)
-    {
-      mcfglist.push(mcfgitem);
-    }
+  }
+  if (isnew === true) {
+    mcfglist.push(mcfgitem);
+  }
 
-    Outputdevice.Writefile(outdevicefilename,mcfglist );
+  Outputdevice.Writefile(outdevicefilename, mcfglist);
 
-
-    //다시읽고 자동제어 다시시작
-    mOutDevices = Outputdevice.Readfile(outdevicefilename);
-    Autocontrolload(null);
-
-
+  //다시읽고 자동제어 다시시작
+  mOutDevices = Outputdevice.Readfile(outdevicefilename);
+  Autocontrolload(null);
 }
 
+function saveautoconfig(mcfgitem) {
+  let mcfglist = AutoControlconfig.Readfile(autofilename);
+  let isnew = true;
 
+  for (let i = 0; i < mcfglist.length; i++) {
+    let mcfg = mcfglist[i];
+    if (mcfg.uniqid === mcfgitem.uniqid) {
+      isnew = false;
 
-function saveautoconfig(mcfgitem)
-{
-  let mcfglist= AutoControlconfig.Readfile(autofilename);
-  let isnew=true;
+      //이전출력장비 설정값을 미리 클리어한후 업데이트함.
+      setoutputchangebyautocontrol(mcfglist[i], false, true);
 
-    for(let i=0;i< mcfglist.length ; i++)
-    {
-      let mcfg =mcfglist[i];
-      if(mcfg.uniqid === mcfgitem.uniqid)
-      {
-        isnew=false;
-
-        
-        //이전출력장비 설정값을 미리 클리어한후 업데이트함.
-        setoutputchangebyautocontrol(mcfglist[i],false,true);
-
-        mcfglist[i] = mcfgitem;
-        break;
-
-      }
+      mcfglist[i] = mcfgitem;
+      break;
     }
-    if(isnew ===true)
-    {
-      mcfglist.push(mcfgitem);
-    }
+  }
+  if (isnew === true) {
+    mcfglist.push(mcfgitem);
+  }
 
-    AutoControlconfig.Writefile(autofilename,mcfglist );
-    Autocontrolload(mcfgitem);
-
-
-
+  AutoControlconfig.Writefile(autofilename, mcfglist);
+  Autocontrolload(mcfgitem);
 }
-
 
 function postapi(req, rsp) {
   let rspmsg = new responseMessage();
-
   let reqmsg = JSON.parse(JSON.stringify(req.body));
 
   //console.log("---------------------------------postapi :  sensor :"  + reqmsg.getSensors+ " ,getOutputport:  " + reqmsg.getOutputport);
-
 
   if (reqmsg.setManualControl === true) {
     if (reqmsg.OutputManual) {
@@ -117,50 +88,33 @@ function postapi(req, rsp) {
       console.log("setManualControl outputOnoffstring:   " + outputOnoffstring);
       rspmsg.IsOK = true;
     }
-  } 
-  else if(reqmsg.setAutocontrol ===true)
-  {
-
+  } else if (reqmsg.setAutocontrol === true) {
     if (reqmsg.Autoconfigitem) {
-      let acfg= AutoControlconfig.deepcopy(reqmsg.Autoconfigitem);
-      console.log("setAutocontrol id:   " + acfg.uniqid  + ", name :" +acfg.name ) ;
+      let acfg = AutoControlconfig.deepcopy(reqmsg.Autoconfigitem);
+      console.log("setAutocontrol id:   " + acfg.uniqid + ", name :" + acfg.name);
       saveautoconfig(acfg);
-
-
     }
 
     rspmsg.IsOK = true;
-  }
-  else if(reqmsg.setDeviceconfig ===true)
-  {
-
+  } else if (reqmsg.setDeviceconfig === true) {
     if (reqmsg.Deviceconfigitem) {
-      let acfg= Outputdevice.Clonbyjsonobj(reqmsg.Deviceconfigitem);
-      console.log("setDevice id:   " + acfg.Uniqid  + ", name :" +acfg.Name ) ;
+      let acfg = Outputdevice.Clonbyjsonobj(reqmsg.Deviceconfigitem);
+      console.log("setDevice id:   " + acfg.Uniqid + ", name :" + acfg.Name);
       savedeviceconfig(acfg);
-
-
     }
 
     rspmsg.IsOK = true;
+  } else {
+    if (reqmsg.getAutoControl === true) {
+      rspmsg.AutoControls.push(...mAutolist);
+    }
+    if (reqmsg.getSensors === true) {
+      rspmsg.Sensors.push(...mSensors);
+    }
+    if (reqmsg.getOutputport === true) {
+      rspmsg.Outputs.push(...mOutDevices);
+    }
   }
-
-
-  else{
-
-  if (reqmsg.getAutoControl === true) {
-    rspmsg.AutoControls.push(...mAutolist);
-
-  }
-  if (reqmsg.getSensors === true) {
-    rspmsg.Sensors.push(...mSensors);
-  } 
-  if (reqmsg.getOutputport === true) {
-    rspmsg.Outputs.push(...mOutDevices);
-    
-  } 
-}
- 
 
   rsp.send(JSON.stringify(rspmsg));
 }
@@ -253,7 +207,7 @@ function sensorupdate(newsensorlist) {
     let isnew = true;
     for (const oldsensor of mSensors) {
       if (oldsensor.UniqID === newsensor.UniqID) {
-      //  console.log("sensorupdate  : " + newsensor.UniqID + " name : " + newsensor.Name + " value : " + newsensor.valuestring);
+        //  console.log("sensorupdate  : " + newsensor.UniqID + " name : " + newsensor.Name + " value : " + newsensor.valuestring);
 
         oldsensor.value = newsensor.value;
         oldsensor.status = newsensor.status;
@@ -278,8 +232,7 @@ async function modbusTask(modbuscomm) {
   let mss = [];
   const sensornodes = [mysnode_sid_11, mysnode_sid_12];
   let isoutput_update = false;
-  let modbusTask_count=0;
-
+  let modbusTask_count = 0;
 
   try {
     while (true) {
@@ -287,11 +240,12 @@ async function modbusTask(modbuscomm) {
         return "modbusTask";
       }
 
-      
+      //console.log("test name " +  mysnode_sid_11.constructor.name);
+
       ///출력상태가 변경되면 출력변경함.
       if (isoutputchange(outputOnoffstring, last_actuator_status) == true && isoutput_update == false) {
         console.log("set myactuator status  write: " + outputOnoffstring + " ,last: " + last_actuator_status);
-        
+
         await myactuator.ControlOnOffString(outputOnoffstring);
         await KDCommon.delay(300);
         isoutput_update = true;
@@ -305,28 +259,24 @@ async function modbusTask(modbuscomm) {
         outputstatusupdate(mOutDevices, last_actuator_status);
         await KDCommon.delay(200);
 
-       // console.log("myactuator status : " + last_actuator_status);
+        // console.log("myactuator status : " + last_actuator_status);
       }
 
+      mss = [];
+      for (const snode of sensornodes) {
+        let sensorlist = await snode.ReadSensorAll();
+        if (sensorlist) {
+          mss.push(...sensorlist);
+        }
+        await KDCommon.delay(300);
+      }
 
-          mss = [];
-          for(const snode of sensornodes)
-          {
-            let sensorlist = await snode.ReadSensorAll();
-            if (sensorlist) {
-              mss.push(...sensorlist);
-            }
-            await KDCommon.delay(300);
-          }
-
-          
-          sensorupdate(mss);
+      sensorupdate(mss);
 
       await KDCommon.delay(200);
 
       modbusTask_count++;
-       console.log("modbusTask end: " + modbusTask_count);
-     
+      console.log("modbusTask end: " + modbusTask_count);
     }
   } catch (error) {
     console.log("modbusTask : catch...... ");
@@ -350,66 +300,48 @@ function outputstatusupdate(outdevlist, onoffstring) {
   }
 }
 
-
 function Autocontrolload(isonlyoneitem) {
+  let mcfglist = AutoControlconfig.Readfile(autofilename);
 
-  let mcfglist= AutoControlconfig.Readfile(autofilename);
-
-  ///전체 다시 로드 
-  if(isonlyoneitem===null)
-  {
-    mAutolist=[];
-    for(const mcfg of mcfglist)
-    {
+  ///전체 다시 로드
+  if (isonlyoneitem === null) {
+    mAutolist = [];
+    for (const mcfg of mcfglist) {
       mAutolist.push(new AutoControl(mcfg));
     }
-  }
-  else{ //특정 한개만 다시로드 
+  } else {
+    //특정 한개만 다시로드
 
-    for (let i=0;i<mAutolist.length ; i++ ) {
-
-      let ma =mAutolist[i];
-      if( ma.mConfig.uniqid === isonlyoneitem.uniqid)
-      {
-        mAutolist[i]= new AutoControl(isonlyoneitem);
+    for (let i = 0; i < mAutolist.length; i++) {
+      let ma = mAutolist[i];
+      if (ma.mConfig.uniqid === isonlyoneitem.uniqid) {
+        mAutolist[i] = new AutoControl(isonlyoneitem);
         console.log("Autocontrolload reload: " + isonlyoneitem.uniqid + ",name : " + ma.mConfig.name);
         return "ok";
       }
-
     }
-//목록에 없으면 새로 만든거임
+    //목록에 없으면 새로 만든거임
     mAutolist.push(new AutoControl(isonlyoneitem));
-
-
-    
   }
-
 }
 
-function setoutputchangebyautocontrol(mautocfg,onoffstate,  isclear)
-{
+function setoutputchangebyautocontrol(mautocfg, onoffstate, isclear) {
   for (const mdevid of mautocfg.devids) {
     for (let mdev of mOutDevices) {
       if (mdev.UniqID == mdevid) {
-        if(isclear ===true)
-        {
+        if (isclear === true) {
           setOutput(mdev.Channel, false);
           mdev.Autocontrolid = "";
-        }
-        else{
+        } else {
           setOutput(mdev.Channel, onoffstate);
           mdev.Autocontrolid = mautocfg.uniqid;
         }
-        
       }
     }
   }
 }
 
-
 async function controltask() {
-
-
   let sec_count = 0;
 
   /*
@@ -423,7 +355,7 @@ async function controltask() {
   m4s.pwmofftime = 4;
   mAutolist.push(m4s);
 */
-/*
+  /*
   mOutDevices = [];
   let mout1 = new Outputdevice(0, "메인펌프", 0, Outputdevice.OutDeviceTypeEnum.ODT_VALVE);
   let mout2 = new Outputdevice(1, "환기팬", 1, Outputdevice.OutDeviceTypeEnum.ODT_FAN);
@@ -440,7 +372,7 @@ async function controltask() {
   Outputdevice.Writefile(outdevicefilename,mOutDevices);
 */
 
-/*
+  /*
 
 let ma1 = new AutoControlconfig();
   ma1.name = "냉방제어";
@@ -488,15 +420,9 @@ let ma1 = new AutoControlconfig();
 AutoControlconfig.Writefile(autofilename,mconfiglist);
 */
 
-
   mOutDevices = Outputdevice.Readfile(outdevicefilename);
 
   Autocontrolload(null);
-
-  
-
-  
-
 
   try {
     while (true) {
@@ -507,10 +433,10 @@ AutoControlconfig.Writefile(autofilename,mconfiglist);
       const totalsec = clocknow.getHours() * 3600 + clocknow.getMinutes() * 60 + clocknow.getSeconds();
 
       for (const ma of mAutolist) {
-      //  console.log("mAutolist name : " + ma.mConfig.name);
+        //  console.log("mAutolist name : " + ma.mConfig.name);
 
         if (ma.ischangebycontrol(mSensors, totalsec) === true) {
-          setoutputchangebyautocontrol(ma.mConfig,ma.mState.onoffstate, false);
+          setoutputchangebyautocontrol(ma.mConfig, ma.mState.onoffstate, false);
         }
       }
 

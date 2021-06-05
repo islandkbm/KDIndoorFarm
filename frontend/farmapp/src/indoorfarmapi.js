@@ -164,13 +164,10 @@ export default class IndoorFarmAPI {
 
   static async setmanualonoff(moutputport) {
    
-    var mlist = [];
-
-    try {
+        try {
       const reqmsg = new reqMessage();
       reqmsg.setManualControl = true;
       reqmsg.OutputManual.push(moutputport);
-
       
       const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
       const resdata = await res.json();
@@ -179,8 +176,8 @@ export default class IndoorFarmAPI {
     } catch (error) {
       console.log(" setmanualonoff error : " + error);
     } finally {
-      console.log(" setmanualonoff finally  : " + mlist.length);
-      return mlist;
+      console.log(" setmanualonoff finally  : " +moutputport);
+      return "ok";
     }
 
   }

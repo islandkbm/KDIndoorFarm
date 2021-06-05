@@ -246,7 +246,7 @@ const Autocontrolpage = () => {
 
             <div className="control_end">
             <button className = "cont_save" onClick={() => setupSave(copycfg)} id="editcheck">저장  </button>
-            <button className = "cont_reset" onClick={() => setupselected(null)} id="editcheck">최소 </button>
+            <button className = "cont_reset" onClick={() => setupselected(null)} id="editcheck">취소 </button>
             </div>
 
           </div>
