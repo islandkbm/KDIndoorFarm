@@ -18,20 +18,6 @@ const Settingpage = () => {
     rlist24.push(i);
   }
 
-  /*
-  for (let i = 1; i <= 12; i++) {
-      if(i<10)
-      {
-    rlist12.push("R-0" +i);
-      }
-      else{
-        rlist12.push("R-" + i);
-      }
-  }
-  for (let i = 13; i <= 24; i++) {
-    rlist24.push("R-" + i);
-  }
-*/
   function setupSave(mcfg) {
     console.log("setupSave uidd: " + mcfg.UniqID + " name : " + mcfg.Name);
     

@@ -105,6 +105,7 @@ function postapi(req, rsp) {
 
     rspmsg.IsOK = true;
   } else {
+    //나머지는 상태요구 
     if (reqmsg.getAutoControl === true) {
       rspmsg.AutoControls.push(...mAutolist);
     }
@@ -342,83 +343,7 @@ function setoutputchangebyautocontrol(mautocfg, onoffstate, isclear) {
 }
 
 async function controltask() {
-  let sec_count = 0;
 
-  /*
-  let m3s = new AutoControl(0, 86000, 0);
-  m3s.pwmontime = 3;
-  m3s.pwmofftime = 3;
-  mAutolist.push(m3s);
-
-  let m4s = new AutoControl(0, 86000, 2);
-  m4s.pwmontime = 2;
-  m4s.pwmofftime = 4;
-  mAutolist.push(m4s);
-*/
-  /*
-  mOutDevices = [];
-  let mout1 = new Outputdevice(0, "메인펌프", 0, Outputdevice.OutDeviceTypeEnum.ODT_VALVE);
-  let mout2 = new Outputdevice(1, "환기팬", 1, Outputdevice.OutDeviceTypeEnum.ODT_FAN);
-  let mout3 = new Outputdevice(2, "분무밸브", 2, Outputdevice.OutDeviceTypeEnum.ODT_VALVE);
-  let mout4 = new Outputdevice(3, "난방", 3, Outputdevice.OutDeviceTypeEnum.ODT_HEATER);
-  let mout5 = new Outputdevice(4, "냉방", 4, Outputdevice.OutDeviceTypeEnum.ODT_COOLER);
-
-  mOutDevices.push(mout1);
-  mOutDevices.push(mout2);
-  mOutDevices.push(mout3);
-  mOutDevices.push(mout4);
-  mOutDevices.push(mout5);
-
-  Outputdevice.Writefile(outdevicefilename,mOutDevices);
-*/
-
-  /*
-
-let ma1 = new AutoControlconfig();
-  ma1.name = "냉방제어";
-  ma1.istimer = false;
-  ma1.pwmcontrolenable = false;
-  ma1.sensorid = "S11C513";
-  ma1.onvalue = 27;
-  ma1.offvalue = 28;
-  ma1.condition = "down";
-  ma1.enabled=true;
-  ma1.devids.push(0);
-
-
-  let ma2 = new AutoControlconfig();
-  ma2.name = "PWM제어";
-  ma2.istimer = false;
-  ma2.pwmcontrolenable = true;
-  ma2.pwmontime=10;
-  ma2.pwmofftime=20;
-  ma2.enabled=true;
-  ma2.devids.push(1);
-
-
-
-  let ma3 = new AutoControlconfig();
-  ma3.name = "난방제어";
-  ma3.istimer = false;
-  ma3.pwmcontrolenable = false;
-  ma3.sensorid = "S11C513";
-  ma3.onvalue = 30;
-  ma3.offvalue = 29;
-  ma3.condition = "up";
-  ma3.enabled=true;
-  ma3.devids.push(3);
-  ma3.devids.push(4);
-  ma3.devids.push(5);
-
-
-  let mconfiglist=[];
-  mconfiglist.push(ma1);
-  mconfiglist.push(ma2);
-  mconfiglist.push(ma3);
-
-
-AutoControlconfig.Writefile(autofilename,mconfiglist);
-*/
 
   mOutDevices = Outputdevice.Readfile(outdevicefilename);
 
