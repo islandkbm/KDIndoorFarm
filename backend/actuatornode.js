@@ -105,7 +105,7 @@ module.exports = class ActuatorNode {
         return retstring;
       }
       else{
-        console.error( "ReadStatusString");
+        console.error( "ReadStatusString eror:");
       }
 
       return null;

@@ -5,6 +5,8 @@
     
     constructor()
     {
+        let today = new Date(); 
+        this.datetime=today.toLocaleString();//응답된 날자+시간
         this.Sensors=[];
         this.Outputs=[];
         this.AutoStatus=[];

@@ -1,5 +1,6 @@
-const fs = require("fs");
 
+const fs = require("fs");
+const os = require("os");
 const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 
 const ModbusRTU = require("modbus-serial");
@@ -11,6 +12,21 @@ const AutoControlconfig = require("../frontend/farmapp/src/commonjs/autocontrolc
 const Outputdevice = require("../frontend/farmapp/src/commonjs/outputdevice.js");
 const Sensordevice = require("../frontend/farmapp/src/commonjs/sensordevice.js");
 const responseMessage = require("../frontend/farmapp/src/commonjs/responseMessage");
+
+var exec = require("child_process").exec;
+
+
+
+
+//import firebase from "../frontend/farmapp/src/commonjs/firebase.js";
+
+//const firebase = require("../frontend/farmapp/src/commonjs/firebase.js");
+
+
+const postproxytask = require("./postproxy.js");
+
+
+
 
 const outdevicefilename = "../indoorfarmoutputdevicelist.json";
 const autofilename = "../indoorfarmautocontollist.json";
@@ -72,10 +88,24 @@ function saveautoconfig(mcfgitem) {
 }
 
 function postapi(req, rsp) {
-  let rspmsg = new responseMessage();
+  
   let reqmsg = JSON.parse(JSON.stringify(req.body));
 
+  //console.log("---------------------------------postapi :  puniqid :"  + reqmsg.puniqid);
+  //console.log(req.body);
+
   //console.log("---------------------------------postapi :  sensor :"  + reqmsg.getSensors+ " ,getOutputport:  " + reqmsg.getOutputport);
+
+  let rspmsg = msgprocessing(reqmsg);
+
+  rsp.send(JSON.stringify(rspmsg));
+
+}
+
+function msgprocessing(reqmsg)
+{
+
+  let rspmsg = new responseMessage();
 
   if (reqmsg.setManualControl === true) {
     if (reqmsg.OutputManual) {
@@ -117,13 +147,58 @@ function postapi(req, rsp) {
     }
   }
 
-  rsp.send(JSON.stringify(rspmsg));
+  return rspmsg;
 }
+
+
 
 async function maintask() {
   let maincount = 0;
   istaskStopByerror = false;
   console.log("------------main start-------------------");
+
+
+  console.log('Hostname : ' + os.hostname());
+  console.log('OS Type : ' + os.type());
+  console.log('Platform : ' + os.platform());
+
+
+  exec("node -v", function (err, stdout, stderr) {
+
+    console.log(stdout);
+
+    console.log(stderr);
+  });
+
+
+
+
+
+
+
+
+  var database = KDCommon.getFirebaseDB();
+  var firerequest =database.ref('Sensors/request/message');
+  let frresponse =database.ref('Sensors/response/message');
+
+  firerequest.on('value', (snapshot) => {
+    const data = snapshot.val();
+    
+
+    let reqmsg = JSON.parse(data);
+
+    console.log(reqmsg.datetime);
+
+    
+    const rspmsg =msgprocessing(reqmsg);
+    frresponse.set(JSON.stringify(rspmsg));
+
+    
+
+});
+
+
+
 
   try {
     if (ModbusComm.isOpen == false) {
@@ -139,8 +214,8 @@ async function maintask() {
       console.info("connect comport : " + ModbusComm.isOpen);
     }
     if (ModbusComm.isOpen == true) {
-      await ModbusComm.setTimeout(200);
-      const promisearray = [modbusTask(ModbusComm), controltask()];
+      await ModbusComm.setTimeout(300);
+      const promisearray = [modbusTask(ModbusComm), controltask() ];
       await Promise.all(promisearray);
     }
 
@@ -240,13 +315,10 @@ async function modbusTask(modbuscomm) {
       if (istaskStopByerror == true) {
         return "modbusTask";
       }
-
       //console.log("test name " +  mysnode_sid_11.constructor.name);
-
       ///출력상태가 변경되면 출력변경함.
       if (isoutputchange(outputOnoffstring, last_actuator_status) == true && isoutput_update == false) {
         console.log("set myactuator status  write: " + outputOnoffstring + " ,last: " + last_actuator_status);
-
         await myactuator.ControlOnOffString(outputOnoffstring);
         await KDCommon.delay(300);
         isoutput_update = true;
@@ -273,9 +345,7 @@ async function modbusTask(modbuscomm) {
       }
 
       sensorupdate(mss);
-
       await KDCommon.delay(200);
-
       modbusTask_count++;
       console.log("modbusTask end: " + modbusTask_count);
     }

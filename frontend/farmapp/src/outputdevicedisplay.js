@@ -11,7 +11,7 @@ function manualonoff(channel, onoff) {
   mdev.isonoff = onoff;
 
   IndoorFarmAPI.setmanualonoff(mdev);
-  alert("ok");
+  
 }
 
 function outputdevbox(mydata, isonlystatus) {

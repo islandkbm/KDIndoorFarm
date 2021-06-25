@@ -10,9 +10,50 @@ import Autocontrolpage from "./pages/autocontrolpage";
 import Settingpage from "./pages/settingpage";
 import About from "./pages/about";
 
+const os = require("os");
+
+// 사용자 페이지접근 권한
+const myRole = {
+  islocal: true,  // 로컬, 원격
+  isadmin: true, // 관리자, 사용자
+}
+
+
 function App() {
   const [hwchannel, sethwchannel] = useState(0);
+
+  let adminmenu;
+
+  console.log("-------------------------react start---------------------");
+  console.log(myRole);
+  console.log('Hostname : ' + os.hostname());
+  console.log('OS Type : ' + os.type());
+  console.log('Platform : ' + os.platform());
   
+
+let hostname =os.hostname();
+
+  if (myRole.isadmin === false) {
+    
+    adminmenu = (
+      <Link to="/about" className="linkmenu">
+      <div className="content">
+        <img src="./image/s_set.png" className="con_img" /> {hostname}
+      </div>
+    </Link>
+    );
+
+  } else {
+    adminmenu = (
+      <Link to="/about" className="linkmenu">
+      <div className="content">
+        <img src="./image/s_set.png" className="con_img" /> {hostname}
+      </div>
+    </Link>
+    );
+  }
+
+
 
   return (
     <div className="App">
@@ -51,6 +92,9 @@ function App() {
                   <img src="./image/s_set.png" className="con_img" /> SETTING
                 </div>
               </Link>
+              {adminmenu}
+
+
             </div>
             </nav>
           </div>
@@ -70,7 +114,7 @@ function App() {
               
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/devices" component={Devicepage} />
-              <Route path="/about" component={About} />
+              <Route path="/about" component={About} role={myRole} />
               <Route path="/sensor" component={Sensorpage} />
               <Route path="/autocontrol" component={Autocontrolpage} />
               <Route path="/setup" component={Settingpage} />

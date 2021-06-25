@@ -21,7 +21,7 @@ export default class IndoorFarmAPI {
 
       body: JSON.stringify(data), // 
     });
-    return response; 
+    return response.json(); 
   }
 
   static async getsensordatas() {
@@ -49,7 +49,7 @@ export default class IndoorFarmAPI {
 
     console.log(" setDeviceconfigsetup rsp : " + isok);
     try {
-      const reqmsg = new reqMessage();
+      const reqmsg = new reqMessage("IF9999");
       reqmsg.setDeviceconfig = isdevcofig;
       reqmsg.Deviceconfigitem = mItems;
       reqmsg.setAutocontrol = isautocfg;
@@ -57,8 +57,8 @@ export default class IndoorFarmAPI {
       reqmsg.setManualControl = ismanual;
       reqmsg.OutputManual.push(mItems);
 
-      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
-      const resdata = await res.json();
+      const resdata = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      
       console.log(" setRequest rsp : " + resdata.IsOK);
       isok = true;
     } catch (error) {
@@ -72,17 +72,17 @@ export default class IndoorFarmAPI {
   //서버에 상태및 정보 요청
   static async getRequest(isensor, isoutdev, isautostate, isautocontrol) {
     let mrepmsg = new responseMessage();
-
+ 
     try {
-      const reqmsg = new reqMessage();
+      const reqmsg = new reqMessage("IF9999");
       //자동제어  센서목록, 출력목록 다 가져옴
       reqmsg.getAutoControlstate = isautostate;
       reqmsg.getSensors = isensor;
       reqmsg.getOutputport = isoutdev;
       reqmsg.getAutoControl = isautocontrol;
 
-      const res = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
-      const resdata = await res.json();
+      const resdata = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      
 
       resdata.AutoControls.forEach((element) => {
         mrepmsg.AutoControls.push(AutoControl.Clonbyjsonobj(element));
