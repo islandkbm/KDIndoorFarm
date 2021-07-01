@@ -4,7 +4,7 @@ import Sensordisplay from "../sensordisplay";
 import firebase from "../firebase.js";
 import reqMessage from "../reqMessage";
 
-
+import myGlobalvalues from "../myGlobal";
 
 
 
@@ -29,20 +29,19 @@ function sendfirebase() {
 
   
 
-const About = ({role}) => {
+const About = () => {
 
     const [reqvlaue, requestupdate] = useState(1);
     const [repvalue, reponseupdate] = useState(1);
-
     const [msensorsarray, setSensors] = useState([]);
   
-    console.log(role);
+
 
     
   useEffect(() => {
 
 
-
+    console.log(myGlobalvalues);
 
     frrequest.on('value', (snapshot) => {
         const data = snapshot.val();
@@ -72,7 +71,7 @@ const About = ({role}) => {
     return(
         <div>
             <h2>about Page</h2>
-            <h3>rool: {role? "admin":"user"}</h3>
+            
 
             {Sensordisplay(msensorsarray,true)}
 

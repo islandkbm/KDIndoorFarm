@@ -4,7 +4,7 @@ import Sensordisplay from "../sensordisplay";
 import Outputdevicedisplay from "../outputdevicedisplay";
 import IndoorFarmAPI from "../indoorfarmapi";
 import responseMessage from "../commonjs/responseMessage"
-
+import myGlobalvalues from "../myGlobal";
 
 
 
@@ -20,7 +20,7 @@ const Dashboard = () => {
   
       interval = setInterval(() => {
 
-        IndoorFarmAPI.getRequest(true,true,false).then((mrsp) => {
+        myGlobalvalues.farmapi.getRequest(true,true,false).then((mrsp) => {
             setUpdatedata(mrsp);
 
         });

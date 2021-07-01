@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Outputdevicedisplay from "../outputdevicedisplay";
 import IndoorFarmAPI from "../indoorfarmapi";
+import myGlobalvalues from "../myGlobal";
 
 const Devicepage = () => {
   const [moutdevarray, setUpdate] = useState([]);
@@ -8,7 +9,7 @@ const Devicepage = () => {
     let interval = null;
 
     interval = setInterval(() => {
-      IndoorFarmAPI.getoutputstatus().then((devices) => {
+      myGlobalvalues.farmapi.getoutputstatus().then((devices) => {
         setUpdate(devices);
       });
     }, 1000);

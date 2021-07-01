@@ -4,13 +4,72 @@ import Sensordevice from "./commonjs/sensordevice";
 import Outputdevice from "./commonjs/outputdevice";
 import AutoControl from "./commonjs/autocontrol";
 import responseMessage from "./commonjs/responseMessage";
+import myGlobalvalues from "./myGlobal";
+import KDCommon  from "./commonjs/kdcommon";
+
+
+import firebase from "./firebase.js";
+let database = firebase.database();
+let frrequest =database.ref('Sensors/request/message');
+let frresponse =database.ref('Sensors/response/message');
+
+
+
+let resposemsg ;
 
 const API = "/api/";
 
 export default class IndoorFarmAPI {
 
-  static async postData(url = "", data = {}) {
-    const response = await fetch(url, {
+
+  constructor(islocal) {
+  this.islocal= islocal;
+  if(this.islocal === false)
+  {
+     
+
+    frresponse.on('value', (snapshot) => {
+        const data = snapshot.val();
+
+         resposemsg = JSON.parse(data);
+       //  console.log("resposemsg ...event...");
+
+         //console.log(resposemsg);
+
+    });
+    
+  }
+
+
+  }
+
+   async postData(url = "", data = {}) {
+
+    let response ;
+
+    if(this.islocal === false)
+  {
+      resposemsg  =null;
+      frrequest.set(JSON.stringify(data));
+      //5초 동안 응답기다림.
+      for(let i=0;i<50;i++)
+      {
+        await KDCommon.delay(100);
+        if(resposemsg !=null)
+        {
+      //    console.log("resposemsg");
+          return resposemsg;
+        }
+      }
+      
+
+
+
+  }
+  else
+  {
+
+     response = await fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -21,10 +80,13 @@ export default class IndoorFarmAPI {
 
       body: JSON.stringify(data), // 
     });
+  }
+    
     return response.json(); 
+  
   }
 
-  static async getsensordatas() {
+   async getsensordatas() {
     const resdata = await this.getRequest(true, false, false, false);
     if (resdata) {
       return resdata.Sensors;
@@ -32,24 +94,24 @@ export default class IndoorFarmAPI {
     return null;
   }
 
-  static async getoutputstatus() {
+   async getoutputstatus() {
     const resdata = await this.getRequest(false, true, false, false);
     if (resdata) {
       return resdata.Outputs;
     }
     return null;
   }
-  static async getautocontrols() {
+   async getautocontrols() {
     return await this.getRequest(true, true, true, true);
   }
 
   // 서버에 데이터 저장 요청
-  static async setRequest(mItems, isautocfg, isdevcofig, ismanual) {
+   async setRequest(mItems, isautocfg, isdevcofig, ismanual) {
     let isok = false;
 
     console.log(" setDeviceconfigsetup rsp : " + isok);
     try {
-      const reqmsg = new reqMessage("IF9999");
+      const reqmsg = new reqMessage("IF9988");
       reqmsg.setDeviceconfig = isdevcofig;
       reqmsg.Deviceconfigitem = mItems;
       reqmsg.setAutocontrol = isautocfg;
@@ -57,7 +119,7 @@ export default class IndoorFarmAPI {
       reqmsg.setManualControl = ismanual;
       reqmsg.OutputManual.push(mItems);
 
-      const resdata = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await this.postData(API + "farmrequest", reqmsg);
       
       console.log(" setRequest rsp : " + resdata.IsOK);
       isok = true;
@@ -70,18 +132,21 @@ export default class IndoorFarmAPI {
   }
 
   //서버에 상태및 정보 요청
-  static async getRequest(isensor, isoutdev, isautostate, isautocontrol) {
+   async getRequest(isensor, isoutdev, isautostate, isautocontrol) {
     let mrepmsg = new responseMessage();
  
+
+
+
     try {
-      const reqmsg = new reqMessage("IF9999");
+      const reqmsg = new reqMessage("IF9987");
       //자동제어  센서목록, 출력목록 다 가져옴
       reqmsg.getAutoControlstate = isautostate;
       reqmsg.getSensors = isensor;
       reqmsg.getOutputport = isoutdev;
       reqmsg.getAutoControl = isautocontrol;
 
-      const resdata = await IndoorFarmAPI.postData(API + "farmrequest", reqmsg);
+      const resdata = await this.postData(API + "farmrequest", reqmsg);
       
 
       resdata.AutoControls.forEach((element) => {
@@ -103,15 +168,15 @@ export default class IndoorFarmAPI {
     }
   }
 
-  static async setmanualonoff(moutputport) {
+   async setmanualonoff(moutputport) {
     return await this.setRequest(moutputport, false, false, true);
   }
 
-  static async setAutocontrolsetup(mAutocfg) {
+   async setAutocontrolsetup(mAutocfg) {
     return await this.setRequest(mAutocfg, true, false, false);
   }
 
-  static async setDeviceconfigsetup(mDevcfg) {
+   async setDeviceconfigsetup(mDevcfg) {
     return await this.setRequest(mDevcfg, false, true, false);
   }
 }

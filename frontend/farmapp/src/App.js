@@ -9,36 +9,55 @@ import Devicepage from "./pages/devicepage";
 import Autocontrolpage from "./pages/autocontrolpage";
 import Settingpage from "./pages/settingpage";
 import About from "./pages/about";
+import manistore from "./store"
+import myGlobalvalues from "./myGlobal";
+import IndoorFarmAPI from "./indoorfarmapi";
+
+
 
 const os = require("os");
 
-// 사용자 페이지접근 권한
-const myRole = {
-  islocal: true,  // 로컬, 원격
-  isadmin: true, // 관리자, 사용자
-}
 
 
 function App() {
   const [hwchannel, sethwchannel] = useState(0);
 
+  let islogin=false;
   let adminmenu;
 
   console.log("-------------------------react start---------------------");
-  console.log(myRole);
+  
   console.log('Hostname : ' + os.hostname());
   console.log('OS Type : ' + os.type());
   console.log('Platform : ' + os.platform());
+
+
+  myGlobalvalues.isadmin=false;
+
   
 
 let hostname =os.hostname();
 
-  if (myRole.isadmin === false) {
+if(hostname.indexOf("localhost") != -1)
+{
+  myGlobalvalues.islocal=true;
+}
+else{
+  myGlobalvalues.islocal=false;
+}
+
+myGlobalvalues.farmapi =new IndoorFarmAPI(myGlobalvalues.islocal);
+
+console.log(myGlobalvalues);
+
+
+
+  if (myGlobalvalues.isadmin === false) {
     
     adminmenu = (
       <Link to="/about" className="linkmenu">
       <div className="content">
-        <img src="./image/s_set.png" className="con_img" /> {hostname}
+        <img src="./image/s_set.png" className="con_img" /> user {hostname}
       </div>
     </Link>
     );
@@ -47,7 +66,7 @@ let hostname =os.hostname();
     adminmenu = (
       <Link to="/about" className="linkmenu">
       <div className="content">
-        <img src="./image/s_set.png" className="con_img" /> {hostname}
+        <img src="./image/s_set.png" className="con_img" /> admin :{hostname}
       </div>
     </Link>
     );
@@ -111,14 +130,23 @@ let hostname =os.hostname();
             <div className="board">
               
               <Switch>
-              
-              <Route path="/dashboard" component={Dashboard} />
+
+              {(islogin===true) ? (
+						<Route path="/" component={About}/>
+					) : (
+            <div>
+					    <Route path="/dashboard" component={Dashboard} />
               <Route path="/devices" component={Devicepage} />
-              <Route path="/about" component={About} role={myRole} />
+              <Route path="/about" component={About}  />
               <Route path="/sensor" component={Sensorpage} />
               <Route path="/autocontrol" component={Autocontrolpage} />
               <Route path="/setup" component={Settingpage} />
-              <Route path="/" component={Dashboard} />
+              <Route path="/" component={Dashboard} exact />
+            </div>
+
+					)}
+              
+              
               </Switch>
             </div>
           </div>

@@ -7,16 +7,16 @@ export default class reqMessage {
   }
 
 
-  getSensors = false;
-  getOutputport = false;
-  getAutoControl = false;
-  getAutoControlstate = false;
+  getSensors = undefined;
+  getOutputport = undefined;
+  getAutoControl = undefined;
+  getAutoControlstate = undefined;
 
-  setManualControl = false;
-  setAutocontrol = false;
-  setDeviceconfig = false;
+  setManualControl = undefined;
+  setAutocontrol = undefined;
+  setDeviceconfig = undefined;
 
   OutputManual = [];
-  Autoconfigitem = null;
-  Deviceconfigitem = null;
+  Autoconfigitem = undefined;
+  Deviceconfigitem = undefined;
 }

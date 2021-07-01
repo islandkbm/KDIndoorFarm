@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sensordisplay from "../sensordisplay";
 import IndoorFarmAPI from "../indoorfarmapi";
-
+import myGlobalvalues from "../myGlobal";
 
 
 import { LineChart, ResponsiveContainer,Line, YAxis, XAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -67,7 +67,7 @@ const Sensorpage = () => {
       let interval = null;
   
       interval = setInterval(() => {
-        IndoorFarmAPI.getsensordatas().then((sensors) => {
+        myGlobalvalues.farmapi.getsensordatas().then((sensors) => {
           setSensors(sensors);
         });
       }, 1000);

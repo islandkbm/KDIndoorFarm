@@ -2,6 +2,7 @@ import React from "react";
 import IndoorFarmAPI from "./indoorfarmapi";
 import manualMessage from "./manualmessage";
 import Outputdevice from "./commonjs/outputdevice";
+import myGlobalvalues from "./myGlobal";
 
 function manualonoff(channel, onoff) {
   
@@ -10,7 +11,7 @@ function manualonoff(channel, onoff) {
   mdev.hardwareChannel = channel;
   mdev.isonoff = onoff;
 
-  IndoorFarmAPI.setmanualonoff(mdev);
+  myGlobalvalues.farmapi.setmanualonoff(mdev);
   
 }
 

@@ -1,3 +1,4 @@
+const RangeParser = require("range-parser");
 const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 
 module.exports = class ActuatorNode {
@@ -12,7 +13,6 @@ module.exports = class ActuatorNode {
     
 
   }
-
   
    readRS485Registers(Regaddress, Reglength)
   {
@@ -28,7 +28,6 @@ module.exports = class ActuatorNode {
       
   });
   }
-
 
   
   writeRS485Registers(Regaddress, RegDatas)
