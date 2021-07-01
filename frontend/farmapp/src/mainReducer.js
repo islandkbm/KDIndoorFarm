@@ -1,18 +1,18 @@
 
-import { INCREMENT, DECREMENT } from './mainAction';
+import { SETVALUE, DECREMENT } from './mainAction';
 
 const initState = {
-    value : 0,
+    value : 178,
     diff : 1
 }
 
 function mainReducer(state = initState, actions) 
 {
     switch(actions.type){
-        case INCREMENT:
+        case SETVALUE:
             return state = {
                 ...state,
-                value : state.value + state.diff
+                value : actions.intvalue
             };
         case DECREMENT:
             return state = {

@@ -1,9 +1,9 @@
-export const INCREMENT = 'INCREMENT';
+export const SETVALUE = 'SETVALUE';
 export const DECREMENT = 'DECREMENT';
 
-export const actionIncrement = () => {
+export const actionSetvalue= () => {
     return {
-        type: INCREMENT
+        type: SETVALUE
     }
 }
 

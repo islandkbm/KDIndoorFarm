@@ -1,159 +1,59 @@
 import "./App.css";
 
-import React, {  useState } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import React, { useState } from "react";
+import { connect } from 'react-redux';
 
-import Dashboard from "./pages/dashboard";
-import Sensorpage from "./pages/sensorpage";
-import Devicepage from "./pages/devicepage";
-import Autocontrolpage from "./pages/autocontrolpage";
-import Settingpage from "./pages/settingpage";
-import About from "./pages/about";
-import manistore from "./store"
+import Loginpage from "./pages/loginpage";
+import Mainpage from "./pages/mainpage";
+
+
+
 import myGlobalvalues from "./myGlobal";
 import IndoorFarmAPI from "./indoorfarmapi";
-
-
 
 const os = require("os");
 
 
-
-function App() {
-  const [hwchannel, sethwchannel] = useState(0);
-
-  let islogin=false;
-  let adminmenu;
-
-  console.log("-------------------------react start---------------------");
-  
-  console.log('Hostname : ' + os.hostname());
-  console.log('OS Type : ' + os.type());
-  console.log('Platform : ' + os.platform());
-
-
-  myGlobalvalues.isadmin=false;
-
+function App(props) {
   
 
-let hostname =os.hostname();
 
-if(hostname.indexOf("localhost") != -1)
-{
-  myGlobalvalues.islocal=true;
-}
-else{
-  myGlobalvalues.islocal=false;
-}
+  console.log("-------------------------react APP start---------------------");
+  console.log("Hostname : " + os.hostname() + "OS Type : " + os.type() + "Platform : " + os.platform());
+  console.log("myGlobalvalues count :" + (myGlobalvalues.ncount++) );
+  
+  
+  const provider = window.sessionStorage.getItem('provider');    
+  console.log("provider :" + provider );
 
-myGlobalvalues.farmapi =new IndoorFarmAPI(myGlobalvalues.islocal);
-
-console.log(myGlobalvalues);
-
-
-
-  if (myGlobalvalues.isadmin === false) {
-    
-    adminmenu = (
-      <Link to="/about" className="linkmenu">
-      <div className="content">
-        <img src="./image/s_set.png" className="con_img" /> user {hostname}
-      </div>
-    </Link>
-    );
-
+  let hostname = os.hostname();
+  if (hostname.indexOf("localhost") != -1) {
+    ///로컬로 접속하면 관리자 계정임
+    myGlobalvalues.islocal = true;
+    myGlobalvalues.isuseradmin = true;
   } else {
-    adminmenu = (
-      <Link to="/about" className="linkmenu">
-      <div className="content">
-        <img src="./image/s_set.png" className="con_img" /> admin :{hostname}
-      </div>
-    </Link>
-    );
+    myGlobalvalues.islocal = false;
+    myGlobalvalues.isuseradmin = false;
   }
 
+  myGlobalvalues.farmapi = new IndoorFarmAPI(myGlobalvalues.islocal);
+
+  console.log(myGlobalvalues);
 
 
   return (
     <div className="App">
-
+      {props.value === 178 ? (<Loginpage/> ): (<div>{Mainpage()}</div>)}
       
-      <Router>
-        <div className="indoor">
-          <div className="left">
-            <nav>
-            <div className="name">
-              <img src="./image/kdgb.png" className="name_img" /> SFC-300
-            </div>
-            <div className="menu">
-              <Link to="/dashboard" className="linkmenu">
-                <div className="content">
-                  <img src="./image/s_dash.png" className="con_img" /> DASH BOARD
-                </div>
-              </Link>
-              <Link to="/sensor" className="linkmenu">
-                <div className="content">
-                  <img src="./image/s_sen.png" className="con_img" /> SENSOR
-                </div>
-              </Link>
-              <Link to="/devices" className="linkmenu">
-                <div className="content">
-                  <img src="./image/s_dev.png" className="con_img" /> DEVICE
-                </div>
-              </Link>
-              <Link to="/autocontrol" className="linkmenu">
-                <div className="content">
-                  <img src="./image/s_aut.png" className="con_img" /> AUTOCONTROL
-                </div>
-              </Link>
-              <Link to="/setup" className="linkmenu">
-                <div className="content">
-                  <img src="./image/s_set.png" className="con_img" /> SETTING
-                </div>
-              </Link>
-              {adminmenu}
-
-
-            </div>
-            </nav>
-          </div>
-
-          <div className="right">
-            <div className="top">
-              <div className="top_name"> NO. 1 &nbsp;&nbsp; SENSOR NODE</div>
-              <div className="top_log">
-                <div className="login">LOG IN</div>
-                <div className="join">JOIN</div>
-              </div>
-            </div>
-
-            <div className="board">
-              
-              <Switch>
-
-              {(islogin===true) ? (
-						<Route path="/" component={About}/>
-					) : (
-            <div>
-					    <Route path="/dashboard" component={Dashboard} />
-              <Route path="/devices" component={Devicepage} />
-              <Route path="/about" component={About}  />
-              <Route path="/sensor" component={Sensorpage} />
-              <Route path="/autocontrol" component={Autocontrolpage} />
-              <Route path="/setup" component={Settingpage} />
-              <Route path="/" component={Dashboard} exact />
-            </div>
-
-					)}
-              
-              
-              </Switch>
-            </div>
-          </div>
-        </div>
-      </Router>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = function(state) {
+  return {
+   value: state.value,
+   
+  }
+}
+
+export default  connect(mapStateToProps)(App);
