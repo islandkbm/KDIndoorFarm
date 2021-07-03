@@ -1,14 +1,17 @@
 export const SETVALUE = 'SETVALUE';
-export const DECREMENT = 'DECREMENT';
+export const SETLOGIN = 'SETLOGIN';
 
-export const actionSetvalue= () => {
+export const actionSetvalue= (intvalue) => {
     return {
-        type: SETVALUE
+        intvalue,
+        type: 'SETVALUE'
     }
 }
 
-export const actionDecrement = () => {
+
+export const actionSetlogin = (LoginRole) => {
     return {
-        type: DECREMENT
+        LoginRole,
+        type: 'SETLOGIN'
     }
 }

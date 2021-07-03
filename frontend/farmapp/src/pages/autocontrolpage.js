@@ -1,6 +1,6 @@
 import React, {  useState, useEffect } from "react";
 import AutoControlconfig from "../commonjs/autocontrolconfig";
-import IndoorFarmAPI from "../indoorfarmapi";
+import myGlobalvalues from "../myGlobal";
 import AutoControl from "../commonjs/autocontrol.js";
 
 
@@ -13,7 +13,7 @@ const Autocontrolpage = () => {
   console.log("Autocontrolpage: ");
 
   useEffect(() => {
-    IndoorFarmAPI.getautocontrols().then((mrsp) => {
+    myGlobalvalues.farmapi.getautocontrols().then((mrsp) => {
       setUpdatesensor(mrsp.Sensors);
       setUpdateauto(mrsp.AutoControls);
       setUpdatedevice(mrsp.Outputs);
@@ -58,7 +58,7 @@ const Autocontrolpage = () => {
 
         console.log("setupSave uid: " + " copycfg istimer : " + copycfg.istimer);
 
-        IndoorFarmAPI.setAutocontrolsetup(mcfg).then((ret) => {
+        myGlobalvalues.farmapi.setAutocontrolsetup(mcfg).then((ret) => {
           console.log("setAutocontrolsetup  uid: " + ret);
         });
       }

@@ -107,8 +107,23 @@ function msgprocessing(reqmsg)
 
   let rspmsg = new responseMessage();
 
-  if (reqmsg.setManualControl === true) {
-    if (reqmsg.OutputManual) {
+  if (reqmsg.loginPW)
+  {
+    console.log("setlogin   pw:  " + reqmsg.loginPW);
+
+    if(reqmsg.loginPW === "8877")
+    {
+      rspmsg.retMessage="factory";
+    }
+    else{
+      rspmsg.retMessage="admin";
+    }
+    rspmsg.IsOK = true;
+
+
+  }
+  else if (reqmsg.OutputManual) {
+    
       console.log("setManualControl   " + reqmsg.OutputManual.length);
       for (let mctl of reqmsg.OutputManual) {
         setOutput(mctl.hardwareChannel, mctl.isonoff);
@@ -117,22 +132,20 @@ function msgprocessing(reqmsg)
 
       console.log("setManualControl outputOnoffstring:   " + outputOnoffstring);
       rspmsg.IsOK = true;
-    }
-  } else if (reqmsg.setAutocontrol === true) {
-    if (reqmsg.Autoconfigitem) {
+    
+  } else if (reqmsg.Autoconfigitem) {
+    
       let acfg = AutoControlconfig.deepcopy(reqmsg.Autoconfigitem);
       console.log("setAutocontrol id:   " + acfg.uniqid + ", name :" + acfg.name);
       saveautoconfig(acfg);
-    }
-
+    
     rspmsg.IsOK = true;
-  } else if (reqmsg.setDeviceconfig === true) {
-    if (reqmsg.Deviceconfigitem) {
+  } else if (reqmsg.Deviceconfigitem) {
+    
       let acfg = Outputdevice.Clonbyjsonobj(reqmsg.Deviceconfigitem);
       console.log("setDevice id:   " + acfg.Uniqid + ", name :" + acfg.Name);
       savedeviceconfig(acfg);
-    }
-
+    
     rspmsg.IsOK = true;
   } else {
     //나머지는 상태요구 

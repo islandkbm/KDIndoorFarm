@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
+import { connect } from 'react-redux';
+import { actionSetlogin } from '../mainAction';
+
+
+
 import Dashboard from "./dashboard";
 import Sensorpage from "./sensorpage";
 import Devicepage from "./devicepage";
@@ -11,7 +16,7 @@ import About from "./about";
 
 import myGlobalvalues from "../myGlobal";
 
-const Mainpage = () => {
+const Mainpage = (props) => {
   
     let adminmenu;
 
@@ -35,6 +40,19 @@ const Mainpage = () => {
       </Link>
     );
   }
+
+  function logoutbuttonHandler(e) {
+    
+
+    
+    window.sessionStorage.setItem('login',"logout"); 
+    props.onSetlogin("logout");
+
+
+  }
+
+
+
 
   return (
         
@@ -71,7 +89,14 @@ const Mainpage = () => {
                     <img src="./image/s_set.png" className="con_img" /> SETTING
                   </div>
                 </Link>
-                {adminmenu}
+
+                <Link to="/about" className="linkmenu">
+                    <div className="content">
+                    <img src="./image/s_set.png" className="con_img" />{props.LoginRole}
+                    </div>
+                </Link>
+                
+      
               </div>
             </nav>
           </div>
@@ -80,8 +105,15 @@ const Mainpage = () => {
             <div className="top">
               <div className="top_name"> NO. 1 &nbsp;&nbsp; SENSOR NODE</div>
               <div className="top_log">
-                <div className="login">LOG IN</div>
-                <div className="join">JOIN</div>
+              
+
+                <div className="login">
+                <div className="out_button">
+                <button className="button_on"  onClick={logoutbuttonHandler }> 로그아웃 </button> 
+                </div>
+
+                </div>
+                <div className="join">{myGlobalvalues.islocal? "로컬":"원격"}</div>
               </div>
             </div>
 
@@ -104,4 +136,8 @@ const Mainpage = () => {
 
 };
 
-export default Mainpage;
+
+  
+  export default  Mainpage;
+
+  

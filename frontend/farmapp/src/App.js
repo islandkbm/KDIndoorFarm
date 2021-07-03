@@ -1,30 +1,24 @@
 import "./App.css";
 
-import React, { useState } from "react";
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
 
 import Loginpage from "./pages/loginpage";
 import Mainpage from "./pages/mainpage";
-
-
+import { connect } from "react-redux";
+import { actionSetlogin } from "./mainAction";
 
 import myGlobalvalues from "./myGlobal";
 import IndoorFarmAPI from "./indoorfarmapi";
 
 const os = require("os");
 
-
 function App(props) {
   
-
-
   console.log("-------------------------react APP start---------------------");
   console.log("Hostname : " + os.hostname() + "OS Type : " + os.type() + "Platform : " + os.platform());
-  console.log("myGlobalvalues count :" + (myGlobalvalues.ncount++) );
-  
-  
-  const provider = window.sessionStorage.getItem('provider');    
-  console.log("provider :" + provider );
+  console.log("myGlobalvalues count :" + myGlobalvalues.ncount++);
+
+
 
   let hostname = os.hostname();
   if (hostname.indexOf("localhost") != -1) {
@@ -36,24 +30,44 @@ function App(props) {
     myGlobalvalues.isuseradmin = false;
   }
 
+  console.log("App  islocal : " +myGlobalvalues.islocal);
+
   myGlobalvalues.farmapi = new IndoorFarmAPI(myGlobalvalues.islocal);
 
-  console.log(myGlobalvalues);
+  
+
+  useEffect(() => {
+  
+
+  let loginrole = window.sessionStorage.getItem("login");
+
+    if(loginrole)
+    {
+    }
+    else{
+      loginrole ="logout";
+    }
+    props.onSetlogin(loginrole);
+  
+
+    console.log("App  LoginRole : " +props.LoginRole);
+    
+  }, []);
 
 
-  return (
-    <div className="App">
-      {props.value === 178 ? (<Loginpage/> ): (<div>{Mainpage()}</div>)}
-      
-    </div>
-  );
+
+  return (<div className="App">{props.LoginRole == "logout" ?  Loginpage(props) : Mainpage(props)}</div>);
 }
 
-const mapStateToProps = function(state) {
+const mapStateToProps = function (state) {
   return {
-   value: state.value,
-   
-  }
-}
+    LoginRole: state.LoginRole,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSetlogin: (value) => dispatch(actionSetlogin(value)),
+  };
+};
 
-export default  connect(mapStateToProps)(App);
+export default connect(mapStateToProps,mapDispatchToProps)(App);

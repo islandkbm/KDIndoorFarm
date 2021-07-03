@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Outputdevice from "../commonjs/outputdevice";
-import IndoorFarmAPI from "../indoorfarmapi";
+import myGlobalvalues from "../myGlobal";
 
 const Settingpage = () => {
   let rlist12 = [];
@@ -21,7 +21,7 @@ const Settingpage = () => {
   function setupSave(mcfg) {
     console.log("setupSave uidd: " + mcfg.UniqID + " name : " + mcfg.Name);
     
-    IndoorFarmAPI.setDeviceconfigsetup(mcfg).then((ret) => {
+    myGlobalvalues.farmapi.setDeviceconfigsetup(mcfg).then((ret) => {
       if(ret ==true)
       {
         alert("저장되었습니다.");
@@ -38,7 +38,7 @@ const Settingpage = () => {
   function setupDelete(mcfg) {
     mcfg.DevType = Outputdevice.OutDeviceTypeEnum.ODT_DELETE;
     console.log("setupSave uidd: " + mcfg.UniqID + " name : " + mcfg.Name);
-    IndoorFarmAPI.setDeviceconfigsetup(mcfg).then((ret) => {
+    myGlobalvalues.farmapi.setDeviceconfigsetup(mcfg).then((ret) => {
       console.log("setDeviceconfigsetup  uid: " + ret);
     });
   }
@@ -181,7 +181,7 @@ const Settingpage = () => {
   useEffect(() => {
     let interval = null;
 
-    IndoorFarmAPI.getoutputstatus().then((devices) => {
+    myGlobalvalues.farmapi.getoutputstatus().then((devices) => {
       setUpdatedevice(devices);
       relayseleted12(rlist12);
       relayseleted24(rlist24);

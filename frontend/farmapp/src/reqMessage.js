@@ -7,16 +7,16 @@ export default class reqMessage {
     this.puniqid=pid;//제품 구별 ID 필수
   }
 
+  loginID = undefined;
+  loginPW = undefined;
+
   getSensors = undefined;
   getOutputport = undefined;
   getAutoControl = undefined;
   getAutoControlstate = undefined;
 
-  setManualControl = undefined;
-  setAutocontrol = undefined;
-  setDeviceconfig = undefined;
-
-  OutputManual = [];
+  
+  OutputManual = undefined;
   Autoconfigitem = undefined;
   Deviceconfigitem = undefined;
 }

@@ -63,6 +63,8 @@ const Sensorpage = () => {
 
     const [msensorsarray, setSensors] = useState([]);
   
+    console.log("-------------------------Sensorpage  ---------------------");
+
     useEffect(() => {
       let interval = null;
   

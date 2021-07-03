@@ -1,23 +1,24 @@
 
-import { SETVALUE, DECREMENT } from './mainAction';
+import { SETVALUE, SETLOGIN } from './mainAction';
 
 const initState = {
-    value : 178,
-    diff : 1
+    LoginRole : "logout",
+    value: 0
+    
 }
-
+ 
 function mainReducer(state = initState, actions) 
 {
     switch(actions.type){
         case SETVALUE:
             return state = {
                 ...state,
-                value : actions.intvalue
+                value  : actions.intvalue
             };
-        case DECREMENT:
+        case SETLOGIN:
             return state = {
                 ...state,
-                value : state.value - state.diff
+                LoginRole : actions.LoginRole
             };
         default:
             return state;
