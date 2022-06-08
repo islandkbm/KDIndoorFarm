@@ -127,7 +127,7 @@ export default class IndoorFarmAPI {
     } catch (error) {
       console.log(" getRequest error : " + error);
     } finally {
-      console.log(" getRequest finally  : " + mrepmsg);
+      //console.log(" getRequest finally  : " + mrepmsg);
       return mrepmsg;
     }
   }
@@ -135,6 +135,7 @@ export default class IndoorFarmAPI {
   async setmanualonoff(moutputport) {
     const reqmsg = new reqMessage("IF9987");
 
+    reqmsg.OutputManual=[];
     reqmsg.OutputManual.push(moutputport);
 
     return await this.setRequest(reqmsg);

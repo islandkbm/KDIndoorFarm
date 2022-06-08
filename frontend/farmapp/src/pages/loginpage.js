@@ -23,15 +23,25 @@ const Loginpage=(props)=>{
         logintype = (
        
           <div className="content">
-            <label>ID:  </label>
-            <input type="text" key="1234333" name="inputloginid" onChange={inputonchangeHandler} />
+        
+                <button className="button"  onClick={logingoogle }> 구글로그인 </button> 
+                <button className="button"  onClick={loginkakao }> 카카오톡로그인 </button> 
+                <button className="button"  onClick={loginbuttonHandler }> 회원가입 </button> 
           </div>
        
       );
     } else {
         logintype = (
-        <div className="content">
+        <div className="">
             <label>간편로그인:  </label>
+            
+            
+            <div>
+            <label>암호:  </label>
+            <input type="text" key="1234" name="inputloginpw" onChange={inputonchangeHandler} />
+            <button className=""  onClick={loginbuttonHandler }> 로그인 </button> 
+            </div>
+            
           </div>
       );
     }
@@ -54,6 +64,25 @@ const Loginpage=(props)=>{
 
     
   }
+  
+  
+  function logingoogle(e) {
+    console.log("logingoogle : " + e.target.name + " id : " + loginid + " , pw : " + loginpw);
+
+    let retrole= "admin";
+    window.sessionStorage.setItem('login',retrole); 
+    props.onSetlogin(retrole);
+  }
+
+  
+  function loginkakao(e) {
+    console.log("loginkakao : " + e.target.name + " id : " + loginid + " , pw : " + loginpw);
+
+    let retrole= "user";
+    window.sessionStorage.setItem('login',retrole); 
+    props.onSetlogin(retrole);
+  }
+
   function loginbuttonHandler(e) {
     console.log("loginbuttonHandler : " + e.target.name + " id : " + loginid + " , pw : " + loginpw);
 
@@ -92,11 +121,7 @@ const Loginpage=(props)=>{
             {logintype}
 
         
-            <label>암호:  </label>
-            <input type="text" key="1234" name="inputloginpw" onChange={inputonchangeHandler} />
-        <div className="out_button">
-         <button className="button_on"  onClick={loginbuttonHandler }> 로그인 </button> 
-        </div>
+            
 
         </div>
     </div>

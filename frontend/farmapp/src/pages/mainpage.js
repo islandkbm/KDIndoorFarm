@@ -12,6 +12,7 @@ import Devicepage from "./devicepage";
 import Autocontrolpage from "./autocontrolpage";
 import Settingpage from "./settingpage";
 import About from "./about";
+import Factorysetup from "./rasberryonly/factorysetup";
 
 
 import myGlobalvalues from "../myGlobal";
@@ -44,7 +45,7 @@ const Mainpage = (props) => {
   function logoutbuttonHandler(e) {
     
 
-    
+
     window.sessionStorage.setItem('login',"logout"); 
     props.onSetlogin("logout");
 
@@ -119,12 +120,18 @@ const Mainpage = (props) => {
 
             <div className="board">
               <Switch>
+
+              
+              
+              
+
                 <Route path="/dashboard" component={Dashboard} />
                 <Route path="/devices" component={Devicepage} />
-                <Route path="/about" component={About} />
+              
                 <Route path="/sensor" component={Sensorpage} />
                 <Route path="/autocontrol" component={Autocontrolpage} />
                 <Route path="/setup" component={Settingpage} />
+                {props.LoginRole == "admin" ?  (<Route path="/about" component={About} exact/> ): (<Route path="/about" component={Factorysetup} exact />)}
                 <Route path="/" component={Dashboard} exact />
               </Switch>
             </div>

@@ -215,7 +215,7 @@ async function maintask() {
 
   try {
     if (ModbusComm.isOpen == false) {
-      var mconn = ModbusComm.connectRTUBuffered("COM19", {
+      var mconn = ModbusComm.connectRTUBuffered("COM12", {
         baudRate: 115200,
         stopBits: 1,
         dataBits: 8,
@@ -316,8 +316,8 @@ function sensorupdate(newsensorlist) {
 async function modbusTask(modbuscomm) {
   let last_actuator_status = "000000000000000000000000";
   const myactuator = new ActuatorNode(1, modbuscomm);
-  const mysnode_sid_11 = new SensorNode(11, modbuscomm);
-  const mysnode_sid_12 = new SensorNode(12, modbuscomm);
+  const mysnode_sid_11 = new SensorNode(22, modbuscomm);
+  const mysnode_sid_12 = new SensorNode(1, modbuscomm);
   let mss = [];
   const sensornodes = [mysnode_sid_11, mysnode_sid_12];
   let isoutput_update = false;
@@ -345,7 +345,7 @@ async function modbusTask(modbuscomm) {
         outputstatusupdate(mOutDevices, last_actuator_status);
         await KDCommon.delay(200);
 
-        // console.log("myactuator status : " + last_actuator_status);
+         console.log("myactuator status : " + last_actuator_status);
       }
 
       mss = [];

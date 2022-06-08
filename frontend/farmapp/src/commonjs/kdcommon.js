@@ -18,6 +18,11 @@ var firebaseConfig = {
 
 module.exports = class KDCommon {
 
+  static  getFoodJukebox_Productid()
+  {
+    return  0xFC21;
+  }
+   
 
   static delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));

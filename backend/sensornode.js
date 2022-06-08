@@ -2,6 +2,10 @@ const Sensordevice = require("../frontend/farmapp/src/commonjs/sensordevice.js")
 
 const KDCommon = require("../frontend/farmapp/src/commonjs/kdcommon");
 
+
+
+
+
 module.exports = class SensorNode {
   constructor(slaveid, mmaster) {
     this.NodeName = "nuknown";
@@ -9,27 +13,19 @@ module.exports = class SensorNode {
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
     this.SensorCodes = [];
+    this.KDDefaultRegAddr =40; //kd 전용 센서값연속적
+    this.node_error_count=0;
+    this.node_is_disconnect=true;
+    this.node_product_code=0;
   }
-  async CheckmySlaveID(timeoutmsec) {
-    if (this.modbusMaster.getTimeout() != timeoutmsec) {
-      await this.modbusMaster.setTimeout(timeoutmsec);
-    }
-
-    if (this.modbusMaster.getID() != this.SlaveID) {
-      await this.modbusMaster.setID(this.SlaveID);
-      await KDCommon.delay(300);
-    }
-  }
-
-  async ReadSensor(sensorcode) {
+    async ReadSensor(sensorcode) {
     try {
-      await this.CheckmySlaveID(this.DefaultTimeoutmsec);
-
+  
       let sensorchannel = (sensorcode >> 8) & 0xff;
       let sensortype = sensorcode & 0xff;
       let regaddress = 301 + sensorchannel * 200 + sensortype * 3;
       if (regaddress > 300 && regaddress < 1100) {
-        let rv1 = await this.modbusMaster.readHoldingRegisters(regaddress, 3);
+        let rv1 = await this.modbusMaster.readRS485Registers(regaddress, 3);
         if (rv1 != undefined) {
           //                console.log("ReadSensor : " + rv1.data.toString()  );
           let sensorvalue = Buffer.from([(rv1.data[0] >> 0) & 0xff, (rv1.data[0] >> 8) & 0xff, (rv1.data[1] >> 0) & 0xff, (rv1.data[1] >> 8) & 0xff]).readFloatLE(0);
@@ -56,6 +52,7 @@ module.exports = class SensorNode {
           resolve(data) ;
           if(err)
           {
+            
             console.log(err);
           }
       } );
@@ -76,10 +73,62 @@ module.exports = class SensorNode {
     try {
 
 
-      //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec );
+      console.log("ReadSensorAll node_is_disconnect: " + this.node_is_disconnect + " , SlaveID : " + this.SlaveID  + ",node_error_count : " +this.node_error_count);
+      //초기화 상태거나 에러상태이면 product code  값만 확인해서 정상적인지 확인함.
+      if(this.node_is_disconnect == true)
+      {
+        const  rvp = await this.readRS485Registers(4,1);
+        if (rvp != undefined)
+        {
+
+          this.node_product_code = rvp.data[0];
+
+          if(this.node_product_code == KDCommon.getFoodJukebox_Productid())
+          {
+            this.KDDefaultRegAddr =140;
+            
+          }
+          this.node_is_disconnect=false;
+          this.node_error_count=0;
+
+          console.log("node_product_code : " + this.node_product_code );
+
+
+          
+        }
+        else{
+          
+          //console.log("ReadSensorAll await 500: ");
+        }
+
+        return null;
+
+
+
+      }
+
+
+
+
+      
+
+      //30번 연속이면 센서노드 연결상태에러임.
+      if(this.node_error_count >30)
+      {
+        this.node_is_disconnect=true;
+        return null;
+        
+      }
+      else{
+        this.node_is_disconnect=false;
+      }
+
+      this.node_error_count++;
+
+
 
       const sensorreadcount = 20;
-      let regaddress = 40;
+      let regaddress = this.KDDefaultRegAddr;
       const  rv1 = await this.readRS485Registers(regaddress, sensorreadcount * 3); //this.modbusMaster.readHoldingRegisters(regaddress, sensorreadcount * 3);
       let svlist = [];
       if (rv1 != undefined) {
@@ -90,6 +139,9 @@ module.exports = class SensorNode {
           if (sensorcode != 0) {
             let sv = new Sensordevice(this.SlaveID, sensorcode, sv_float, sensorstatus);
             svlist.push(sv);
+            //센서가 읽히면 에러 카운트 0
+            this.node_error_count=0;
+
           }
         }
 

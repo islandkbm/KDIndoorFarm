@@ -10,7 +10,9 @@ module.exports = class ActuatorNode {
     this.SlaveID = slaveid;
     this.modbusMaster = mmaster;
 
-    
+    this.node_error_count=0;
+    this.node_is_disconnect=true;
+    this.node_product_code=0;
 
   }
   
@@ -46,24 +48,15 @@ module.exports = class ActuatorNode {
   
 
 
-  async CheckmySlaveID(timeoutmsec) {
-    //if (this.modbusMaster.getTimeout() != timeoutmsec) {
-      await this.modbusMaster.setTimeout(timeoutmsec);
-    //}
-    if (this.modbusMaster.getID() != this.SlaveID) {
-    //  await this.modbusMaster.setID(this.SlaveID);
-    //  await  KDCommon.delay(300);
-    }
-  }
 
   async ReadStatus(channel, wopid) {
     try {
       if (channel < 24) {
-        await this.CheckmySlaveID(this.DefaultTimeoutmsec);
+     
 
         let regaddress = this.OnOffstatusregstartaddress + channel * 4;
 
-        let rv1 = await this.modbusMaster.readHoldingRegisters(regaddress, 4);
+        let rv1 = await this.modbusMaster.readRS485Registers(regaddress, 4);
         if (rv1 != undefined) {
           console.log("ReadStatus : " + rv1.data.toString() + " wopid : " + wopid);
           if (rv1.data[0] == wopid || wopid == undefined) {
@@ -81,12 +74,56 @@ module.exports = class ActuatorNode {
 
   async ReadStatusString() {
     try {
-     // await this.CheckmySlaveID(this.DefaultTimeoutmsec);
-     //await this.modbusMaster.setTimeout(this.DefaultTimeoutmsec);
      
+
+      console.log("ReadStatusString node_is_disconnect: " + this.node_is_disconnect + " , SlaveID : " + this.SlaveID  + ",node_error_count : " +this.node_error_count);
+      //초기화 상태거나 에러상태이면 product code  값만 확인해서 정상적인지 확인함.
+      if(this.node_is_disconnect == true)
+      {
+        const  rvp = await this.readRS485Registers(4,1);
+        if (rvp != undefined)
+        {
+
+          this.node_product_code = rvp.data[0];
+
+          if(this.node_product_code == KDCommon.getFoodJukebox_Productid())
+          {
+            
+            this.node_is_disconnect=false;
+            this.node_error_count=0;
+          }
+
+          
+        }
+
+        return null;
+
+
+
+      }
+
+      //30번 연속이면 센서노드 연결상태에러임.
+      if(this.node_error_count >30)
+      {
+        this.node_is_disconnect=true;
+        return null;
+        
+      }
+      else{
+        this.node_is_disconnect=false;
+      }
+
+      this.node_error_count++;
+
+
+
+
+
+
+
       let regaddress = this.OnOffstatusregstartaddress;
 
-      let rv1 = await this.readRS485Registers(regaddress, 24 * 4) ; //await this.modbusMaster.readHoldingRegisters(regaddress, 24 * 4);
+      let rv1 = await this.readRS485Registers(regaddress, 24 * 4); //await this.modbusMaster.readHoldingRegisters(regaddress, 24 * 4);
       if (rv1 != undefined) {
         let retstring = "";
 
@@ -99,6 +136,12 @@ module.exports = class ActuatorNode {
           } else {
             retstring += "0";
           }
+
+
+           //상태가 읽히면 에러 카운트 0
+           this.node_error_count=0;
+
+
         }
 
         return retstring;
@@ -119,7 +162,7 @@ module.exports = class ActuatorNode {
       let regdatas = Array();
 
       regdatas[0] = 202;
-      regdatas[1] = 202 + channel * 1000;
+      regdatas[1] = 202 + channel * 1000; //opid
       regdatas[2] = ontimesec & 0xffff;
       regdatas[3] = (ontimesec >> 16) & 0xffff;
       let rv1 = await this.modbusMaster.writeRegisters(regaddress, regdatas);
@@ -156,7 +199,7 @@ module.exports = class ActuatorNode {
           regdatas[chi * 4 + 0] = 201;
         }
 
-        regdatas[chi * 4 + 1] = 202 + chi * 1000;
+        regdatas[chi * 4 + 1] = 202 + chi * 1000; //opid
         regdatas[chi * 4 + 2] = 0;
         regdatas[chi * 4 + 3] = 0;
       }

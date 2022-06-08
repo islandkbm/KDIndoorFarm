@@ -15,7 +15,7 @@ const Devicepage = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [moutdevarray]);
+  }, []);
 
   return( <div>{Outputdevicedisplay(moutdevarray, false)}</div>);
 };

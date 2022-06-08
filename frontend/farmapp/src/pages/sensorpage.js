@@ -68,6 +68,8 @@ const Sensorpage = () => {
     useEffect(() => {
       let interval = null;
   
+      console.log("-------------------------Sensorpage useEffect ---------------------");
+
       interval = setInterval(() => {
         myGlobalvalues.farmapi.getsensordatas().then((sensors) => {
           setSensors(sensors);
@@ -75,7 +77,7 @@ const Sensorpage = () => {
       }, 1000);
   
       return () => clearInterval(interval);
-    }, [msensorsarray]);
+    }, []);
 
     
     return(
